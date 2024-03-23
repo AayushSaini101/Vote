@@ -16,9 +16,6 @@ jobs:
       - name: Add vote label
         if: steps.check-vote.outputs.result == 'true' # Add conditions for authorized voters
         run: |
-          github.issues.addLabels({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            labels: ['needs-more-info']
-          })
+          gh issue add-label --issue ${{ github.event.issue.number }} --label "needs-more-info"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
