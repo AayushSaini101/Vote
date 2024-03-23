@@ -20,3 +20,5 @@ jobs:
         if: contains(github.event.comment.body, 'needs-review')
         run: |
           gh issue edit "$NUMBER" --add-label "$LABELS"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
