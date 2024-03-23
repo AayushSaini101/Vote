@@ -1,39 +1,22 @@
-name: Process Votes
+name: Add label to PR on comment
 
 on:
   issue_comment:
     types: [created]
 
 jobs:
-  process-vote:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check if vote comment
-        id: check-vote
-        run: echo "${{ github.event.comment.body }}" | grep -q '/vote'
-      - name: Add vote label
-        if: steps.check-vote.outputs.result == 'true' && github.event.comment.author_association == 'MEMBER' # Add conditions for authorized voters
+      - uses: actions/checkout@v3
+
+      - name: Get the comment body
+        id: get_comment_body
         run: |
-          echo "Adding vote label..."
-          echo "::set-env name=ISSUE_NUMBER::${{ github.event.issue.number }}"
-          echo "vote-label" >> labels.txt
-          echo "Added vote label successfully."
-      - name: Get issue number
-        if: steps.check-vote.outputs.result == 'true' && github.event.comment.author_association == 'MEMBER' # Add conditions for authorized voters
-        id: get-issue-number
-        run: echo "::set-output name=issue_number::${{ steps.process-vote.outputs.ISSUE_NUMBER }}"
-      - name: Add label
-        if: steps.check-vote.outputs.result == 'true' && github.event.comment.author_association == 'MEMBER' # Add conditions for authorized voters
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo } = context.repo;
-            const issue_number = "${{ steps.get-issue-number.outputs.issue_number }}";
-            const labelsToAdd = fs.readFileSync('labels.txt', 'utf8').trim().split('\n');
-            await github.issues.addLabels({
-              owner,
-              repo,
-              issue_number,
-              labels: labelsToAdd
-            });
+          echo "Comment body: ${{ github.event.comment.body }}"
+
+      - name: Add the label
+        if: contains(github.event.comment.body, 'needs-review')
+        run: |
+          gh pr label add ${{ github.event.issue.number }} needs-review
