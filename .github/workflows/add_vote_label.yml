@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Check if vote comment
         id: check-vote
-        run: echo "${{ github.event.comment.body }}" | grep -q 'Vote created'
+        run: echo "${{ github.event.comment.body }}" | grep  "Vote created"
       - name: Add vote label
         if: steps.check-vote.outputs.result == 'true' # Add conditions for authorized voters
         run: |
