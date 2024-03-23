@@ -18,7 +18,7 @@ jobs:
           echo "Comment body: ${{ github.event.comment.body }}"
 
       - name: Add the label
-        if: contains(steps.get_comment_info.outputs.body, 'vote created') && steps.get_comment_info.outputs.author == 'git-vote[bot]' && github.event.issue.pull_request != null
+        if:  steps.get_comment_info.outputs.author == 'git-vote[bot]' 
         run: |
           gh issue edit ${{ github.event.issue.number }} --add-label "vote"
         env:
