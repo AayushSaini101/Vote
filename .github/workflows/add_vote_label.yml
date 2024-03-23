@@ -19,4 +19,4 @@ jobs:
       - name: Add the label
         if: contains(github.event.comment.body, 'needs-review')
         run: |
-          gh pr label add ${{ github.event.issue.number }} needs-review
+          gh issue edit "$NUMBER" --add-label "$LABELS"
