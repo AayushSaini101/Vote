@@ -5,26 +5,35 @@ on:
     types: [created]
 
 jobs:
-  check-vote-presence:
+  process-vote:
     runs-on: ubuntu-latest
-    permissions:
-      issues: read
     steps:
       - name: Check if vote comment
         id: check-vote
-        run: echo "${{ github.event.comment.body }}" | grep -q 'Vote created'
-      - name: Set vote flag
-        id: set-vote-flag
-        run: echo ::set-output name=vote-flag::$(if [ $? -eq 0 ]; then echo true; else echo false; fi)
-
-  add-label-if-vote-present:
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    needs: [check-vote-presence]
-    if: ${{ needs.check-vote-presence.outputs.vote-flag == 'true' }}
-    steps:
+        run: echo "${{ github.event.comment.body }}" | grep -q '/vote'
       - name: Add vote label
-        run: gh issue add-label ${{ github.event.issue.number }} needs-more-info
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.check-vote.outputs.result == 'true' && github.event.comment.author_association == 'MEMBER' # Add conditions for authorized voters
+        run: |
+          echo "Adding vote label..."
+          echo "::set-env name=ISSUE_NUMBER::${{ github.event.issue.number }}"
+          echo "vote-label" >> labels.txt
+          echo "Added vote label successfully."
+      - name: Get issue number
+        if: steps.check-vote.outputs.result == 'true' && github.event.comment.author_association == 'MEMBER' # Add conditions for authorized voters
+        id: get-issue-number
+        run: echo "::set-output name=issue_number::${{ steps.process-vote.outputs.ISSUE_NUMBER }}"
+      - name: Add label
+        if: steps.check-vote.outputs.result == 'true' && github.event.comment.author_association == 'MEMBER' # Add conditions for authorized voters
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const issue_number = "${{ steps.get-issue-number.outputs.issue_number }}";
+            const labelsToAdd = fs.readFileSync('labels.txt', 'utf8').trim().split('\n');
+            await github.issues.addLabels({
+              owner,
+              repo,
+              issue_number,
+              labels: labelsToAdd
+            });
