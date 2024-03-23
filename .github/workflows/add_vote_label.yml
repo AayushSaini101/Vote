@@ -5,17 +5,26 @@ on:
     types: [created]
 
 jobs:
-  process-vote:
+  check-vote-presence:
     runs-on: ubuntu-latest
     permissions:
-      issues: write
+      issues: read
     steps:
       - name: Check if vote comment
         id: check-vote
-        run: echo "${{ github.event.comment.body }}" | grep  "Vote created"
+        run: echo "${{ github.event.comment.body }}" | grep -q 'Vote created'
+      - name: Set vote flag
+        id: set-vote-flag
+        run: echo ::set-output name=vote-flag::$(if [ $? -eq 0 ]; then echo true; else echo false; fi)
+
+  add-label-if-vote-present:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    needs: [check-vote-presence]
+    if: ${{ needs.check-vote-presence.outputs.vote-flag == 'true' }}
+    steps:
       - name: Add vote label
-        if: steps.check-vote.outputs.result == 'true' # Add conditions for authorized voters
-        run: 
-          echo "checked"
+        run: gh issue add-label ${{ github.event.issue.number }} needs-more-info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
