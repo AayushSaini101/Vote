@@ -10,9 +10,9 @@ jobs:
     steps:
       - name: Check if vote comment
         id: check-vote
-        run: echo "${{ github.event.comment.body }}" | grep -q '/vote'
+        run: echo "${{ github.event.comment.body }}" | grep -q 'Vote created'
       - name: Add vote label
-        if: steps.check-vote.outputs.result == 'true' && github.event.comment.author_association == 'MEMBER' # Add conditions for authorized voters
+        if: steps.check-vote.outputs.result == 'true'' # Add conditions for authorized voters
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
