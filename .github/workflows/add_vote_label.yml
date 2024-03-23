@@ -15,9 +15,10 @@ jobs:
         run: echo "${{ github.event.comment.body }}" | grep -q 'Vote created'
       - name: Add vote label
         if: steps.check-vote.outputs.result == 'true' # Add conditions for authorized voters
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
-          NUMBER: ${{ github.event.issue.number }}
-          LABELS: triage
-        run: gh issue edit $NUMBER --add-label $LABELS
+        run: |
+          github.issues.addLabels({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: ['needs-more-info']
+          })
