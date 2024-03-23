@@ -1,0 +1,37 @@
+name: Add Vote Label
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  add_vote_label:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check for /vote command
+      id: check_command
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const comment = context.payload.comment.body;
+          if (comment.includes('/vote')) {
+            return { voteCommand: true };
+          }
+          return { voteCommand: false };
+
+    - name: Add vote label
+      if: steps.check_command.outputs.voteCommand == true
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const issueNumber = context.payload.issue.number;
+          const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+          await octokit.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: issueNumber,
+            labels: ['vote']
+          });
