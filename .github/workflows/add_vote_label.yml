@@ -7,20 +7,17 @@ on:
 jobs:
   process-vote:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: Check if vote comment
         id: check-vote
         run: echo "${{ github.event.comment.body }}" | grep -q 'Vote created'
       - name: Add vote label
         if: steps.check-vote.outputs.result == 'true' # Add conditions for authorized voters
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo, issue_number } = context.issue;
-            await octokit.rest.issues.addLabels({
-              owner,
-              repo,
-              issue_number,
-              labels: ['vote']
-            });
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          LABELS: triage
+        run: gh issue edit $NUMBER --add-label $LABELS
