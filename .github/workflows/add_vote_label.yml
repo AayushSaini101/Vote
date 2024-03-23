@@ -15,7 +15,7 @@ jobs:
         run: echo "${{ github.event.comment.body }}" | grep  "Vote created"
       - name: Add vote label
         if: steps.check-vote.outputs.result == 'true' # Add conditions for authorized voters
-        run: |
-          gh issue add-label --issue ${{ github.event.issue.number }} --label "needs-more-info"
+        run: 
+          echo "checked"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
