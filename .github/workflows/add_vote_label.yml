@@ -1,37 +1,26 @@
-name: Add Vote Label
+name: Process Votes
 
 on:
   issue_comment:
     types: [created]
 
 jobs:
-  add_vote_label:
+  process-vote:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check for /vote command
-      id: check_command
-      uses: actions/github-script@v5
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const comment = context.payload.comment.body;
-          if (comment.includes('/vote')) {
-            return { voteCommand: true };
-          }
-          return { voteCommand: false };
-
-    - name: Add vote label
-      if: steps.check_command.outputs.voteCommand == true
-      uses: actions/github-script@v5
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const issueNumber = context.payload.issue.number;
-          const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
-          await octokit.issues.addLabels({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: issueNumber,
-            labels: ['vote']
-          });
+      - name: Check if vote comment
+        id: check-vote
+        run: echo "${{ github.event.comment.body }}" | grep -q '/vote'
+      - name: Add vote label
+        if: steps.check-vote.outputs.result == 'true' && github.event.comment.author_association == 'MEMBER' # Add conditions for authorized voters
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo, issue_number } = context.issue;
+            await octokit.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number,
+              labels: ['vote']
+            });
