@@ -42,7 +42,7 @@ jobs:
 #          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add the label
-        if: contains(github.event.comment.body, '/vote') && contains($NAME, github.event.comment.user.login)
+        if: contains(github.event.comment.body, '/vote') && contains(env.NAME, github.event.comment.user.login)
         run: gh issue edit ${{ github.event.issue.number }} --add-label "vote"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
