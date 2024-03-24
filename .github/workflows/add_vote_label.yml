@@ -30,10 +30,6 @@ jobs:
         id: set_usernames
         run: echo "USERNAMES=${{ steps.extract_usernames.outputs.usernames }}" >> $GITHUB_ENV
 
-      - name: Get the comment body
-        id: get_comment_body
-        run: |
-          echo "Comment body: ${{ github.event.comment.body }}"
       
       - name: Add the label
         if: contains(github.event.comment.body, '/vote') && contains(env.USERNAMES, github.event.comment.user.login)
