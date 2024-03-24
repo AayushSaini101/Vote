@@ -5,24 +5,21 @@ on:
     types: [created]
 
 jobs:
-  add-label:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get the comment author and body
-        id: get_comment_info
+      - name: Get the comment body
+        id: get_comment_body
         run: |
-          echo "Comment author: ${{ github.event.comment.user.login }}"
           echo "Comment body: ${{ github.event.comment.body }}"
-
       - name: Add the label
-        if:  steps.get_comment_info.outputs.author == 'git-vote[bot]' 
-        run: |
-          gh issue edit ${{ github.event.issue.number }} --add-label "vote"
+        if: contains(github.event.comment.body, '/vote')
+        run: gh issue edit "$NUMBER" --add-label "$LABELS"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ github.event.issue.number }}
-          LABELS: vote
+          LABELS: vote update in this 
