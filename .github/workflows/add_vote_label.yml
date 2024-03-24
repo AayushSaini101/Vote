@@ -14,7 +14,7 @@ jobs:
       - name: Get the comment body
         id: get_comment_body
         run: |
-          echo "Comment body: ${{ github.event.comment.body }}"
+          echo "Comment body: ${{ github.event.comment.body }}" | ls
 
        # Extract usernames from JSON file
       - name: Extract usernames
