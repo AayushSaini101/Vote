@@ -37,6 +37,7 @@ jobs:
         id: extracting_usernames
         run:
           echo "USERNAMES=${{ steps.set_usernames.output.names }}" >> $GITHUB_ENV
+          | echo $USERNAMES
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
