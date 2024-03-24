@@ -16,14 +16,7 @@ fs.readFile(filePath, 'utf8', (err, data) => {
 
         // Iterate over each object in the array
         jsonData.forEach(item => {
-            console.log('Name:', item.name);
-            console.log('GitHub:', item.github);
-            console.log('LinkedIn:', item.linkedin);
-            console.log('Slack:', item.slack);
-            console.log('Twitter:', item.twitter);
-            console.log('Available for hire:', item.availableForHire);
-            console.log('Repos:', item.repos.join(', '));
-            console.log(''); // Add an empty line for separation
+           console.log(item.github)
         });
     } catch (parseError) {
         console.error('Error parsing JSON data:', parseError);
