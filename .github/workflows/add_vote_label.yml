@@ -15,11 +15,9 @@ jobs:
         id: get_comment_body
         run: |
           echo "Comment body: ${{ github.event.comment.body }}"
+      
       - name: Add the label
-        if: contains(github.event.comment.body, '/vote')
-        run: gh issue edit "$NUMBER" --add-label "$LABELS"
+        if: contains(github.event.comment.body, '/vote') && github.event.comment.user.login == 'AayushSaini101'
+        run: gh issue edit ${{ github.event.issue.number }} --add-label "vote"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
-          NUMBER: ${{ github.event.issue.number }}
-          LABELS: vote 
