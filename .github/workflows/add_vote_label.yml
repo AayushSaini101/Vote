@@ -23,7 +23,7 @@ jobs:
          script: |
           const fs = require('fs');
           const filePath = '../../users.json';
-          const commenterName = context.payload.user.login
+          const commenterName = context.payload
           console.log(context.payload)
           let isTSCMember = false;
           fs.readFile(filePath, 'utf8', (err, data) => {
