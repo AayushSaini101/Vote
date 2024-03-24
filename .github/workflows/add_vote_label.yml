@@ -25,24 +25,37 @@ jobs:
           const filePath = '../../users.json';
           const commenterName = context.payload.sender.login
           let isTSCMember = false;
+          function readFileAndProcess(callback) {
           fs.readFile(filePath, 'utf8', (err, data) => {
-            try {
- 
-           const jsonData = JSON.parse(data);
-  
-           // Iterate over each object in the array
-             jsonData.forEach(item => {
-                if(item.github === commenterName){
-                    isTSCMember=true
-                 }
-             });
-           } catch (parseError) {
-               
-           }
+          try {
+            const jsonData = JSON.parse(data);
+
+            // Iterate over each object in the array
+            jsonData.forEach(item => {
+                console.log(item.github);
+                if (item.github === commenterName) {
+                    isTSCMember = true;
+                }
+            });
+
+            // Invoke the callback function with the result
+            callback(null, isTSCMember);
+          } catch (parseError) {
+            callback(parseError, null);
+          }
           });
-          console.log('Is TSC Member:', isTSCMember);
-          core.setOutput('isTSCMember', isTSCMember);
-          console.log('commentername',commenterName);
+          }
+
+
+          readFileAndProcess((error, result) => {
+          if (error) {
+            console.error('Error:', error);
+          } else {
+            console.log('Is TSC Member:', result);
+            core.setOutput('isTSCMember', isTSCMember);
+          }
+          });
+
 
 
       - name: Add the label

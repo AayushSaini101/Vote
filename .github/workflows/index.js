@@ -1,25 +1,35 @@
 const fs = require('fs');
-
-// Path to your JSON file
 const filePath = '../../users.json';
+const commenterName = "AayushSaini101"
 
-// Read the JSON file
+let isTSCMember = false;
+function readFileAndProcess(callback) {
 fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-        console.error('Error reading file:', err);
-        return;
-    }
+try {
+  const jsonData = JSON.parse(data);
 
-    try {
-        // Parse JSON data
-        const jsonData = JSON.parse(data);
+  // Iterate over each object in the array
+  jsonData.forEach(item => {
+      console.log(item.github);
+      if (item.github === commenterName) {
+          isTSCMember = true;
+      }
+  });
 
-        // Iterate over each object in the array
-        jsonData.forEach(item => {
-            console.log('Name:', item.name);
+  // Invoke the callback function with the result
+  callback(null, isTSCMember);
+} catch (parseError) {
+  callback(parseError, null);
+}
+});
+}
 
-        });
-    } catch (parseError) {
-        console.error('Error parsing JSON data:', parseError);
-    }
+
+readFileAndProcess((error, result) => {
+if (error) {
+  console.error('Error:', error);
+} else {
+  console.log('Is TSC Member:', result);
+   core.setOutput('isTSCMember', isTSCMember);
+}
 });
