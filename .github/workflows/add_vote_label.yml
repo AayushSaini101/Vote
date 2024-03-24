@@ -22,7 +22,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const filePath = '../../users.json';
+            const filePath = 'users.json';
             const commenterName = context.payload.sender.login;
             let isTSCMember = false;
 
