@@ -60,7 +60,7 @@ jobs:
       - name: Add the label
         if: contains(github.event.comment.body, '/cancel-vote') && steps.verify_member.outputs.isTSCMember =='true'
         run:
-          run:|
+          run: |
             if [ "${{ github.event_name }}" = "pull_request" ]; then
               gh pr edit ${{ github.event.pull_request.number }} --remove-label "vote"
             else
