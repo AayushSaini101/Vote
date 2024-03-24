@@ -2,7 +2,7 @@ name: Add label to PR on comment
 
 on:
   issue_comment:
-    types: [ created ]
+    types: [created]
 
 jobs:
   build:
@@ -20,47 +20,46 @@ jobs:
         id: verify_member
         uses: actions/github-script@v6
         with:
-         script: |
-          const fs = require('fs');
-          const filePath = '../../users.json';
-          const commenterName = context.payload.sender.login
-          let isTSCMember = false;
-          function readFileAndProcess(callback) {
-          fs.readFile(filePath, 'utf8', (err, data) => {
-          try {
-            const jsonData = JSON.parse(data);
+          script: |
+            const fs = require('fs');
+            const filePath = '../../users.json';
+            const commenterName = context.payload.sender.login;
+            let isTSCMember = false;
 
-            // Iterate over each object in the array
-            jsonData.forEach(item => {
-                console.log(item.github);
-                if (item.github === commenterName) {
-                    isTSCMember = true;
+            function readFileAndProcess(callback) {
+              fs.readFile(filePath, 'utf8', (err, data) => {
+                if (err) {
+                  callback(err, null);
+                  return;
                 }
+                try {
+                  const jsonData = JSON.parse(data);
+                  // Iterate over each object in the array
+                  jsonData.forEach(item => {
+                    if (item.github === commenterName) {
+                      isTSCMember = true;
+                    }
+                  });
+                  // Invoke the callback function with the result
+                  callback(null, isTSCMember);
+                } catch (parseError) {
+                  callback(parseError, null);
+                }
+              });
+            }
+
+            readFileAndProcess((error, result) => {
+              if (error) {
+                console.error('Error:', error);
+              } else {
+                console.log('Is TSC Member:', result);
+                core.setOutput('isTSCMember', isTSCMember);
+              }
             });
-
-            // Invoke the callback function with the result
-            callback(null, isTSCMember);
-          } catch (parseError) {
-            callback(parseError, null);
-          }
-          });
-          }
-
-
-          readFileAndProcess((error, result) => {
-          if (error) {
-            console.error('Error:', error);
-          } else {
-            console.log('Is TSC Member:', result);
-            core.setOutput('isTSCMember', isTSCMember);
-          }
-          });
-
-
 
       - name: Add the label
         if: contains(github.event.comment.body, '/vote') && steps.verify_member.outputs.isTSCMember == true
         run: gh issue edit ${{ github.event.issue.number }} --add-label "vote"
         env:
-           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           NAME: 'AayushSaini101'
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NAME: 'AayushSaini101'
