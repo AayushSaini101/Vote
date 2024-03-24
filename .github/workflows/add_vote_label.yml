@@ -23,8 +23,7 @@ jobs:
          script: |
           const fs = require('fs');
           const filePath = '../../users.json';
-          const commenterName = context.payload.commenterName
-          console.log(context.payload)
+          const commenterName = context.payload.user.login
           let isTSCMember = false;
           fs.readFile(filePath, 'utf8', (err, data) => {
             try {
@@ -36,19 +35,17 @@ jobs:
                 if(item.github === commenterName){
                     isTSCMember=true
                  }
-
              });
            } catch (parseError) {
                
            }
           });
           console.log('Is TSC Member:', isTSCMember);
-          console.log(commenterName)
           core.setOutput('isTSCMember', isTSCMember);
 
 
       - name: Add the label
-        if: contains(github.event.comment.body, '/vote') && contains(env.NAME, github.event.comment.user.login)
+        if: contains(github.event.comment.body, '/vote') && steps.verify_member.isTSCMember == true
         run: gh issue edit ${{ github.event.issue.number }} --add-label "vote"
         env:
            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
