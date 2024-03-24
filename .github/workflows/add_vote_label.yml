@@ -29,7 +29,7 @@ jobs:
       - name: Set usernames environment variable
         id: set_usernames
         run:
-          names=$(cat names.txt)
+          names=$(cat usernames.txt)
           names=$(echo $names | tr '\n' ', ')
           echo "::set-output name=names::$names"
 
