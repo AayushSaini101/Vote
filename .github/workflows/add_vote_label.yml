@@ -15,9 +15,28 @@ jobs:
         id: get_comment_body
         run: |
           echo "Comment body: ${{ github.event.comment.body }}"
+
+       # Extract usernames from JSON file
+      - name: Extract usernames
+        id: extract_usernames
+        run: |
+          cat users.json | grep -o '"github": "[^"]*' | grep -o '[^"]*$' > usernames.txt
+          echo "Usernames extracted:"
+          cat usernames.txt
+          echo "::set-output name=usernames::$(cat usernames.txt)"
+
+      # Set usernames as an environment variable
+      - name: Set usernames environment variable
+        id: set_usernames
+        run: echo "USERNAMES=${{ steps.extract_usernames.outputs.usernames }}" >> $GITHUB_ENV
+
+      - name: Get the comment body
+        id: get_comment_body
+        run: |
+          echo "Comment body: ${{ github.event.comment.body }}"
       
       - name: Add the label
-        if: contains(github.event.comment.body, '/vote') && github.event.comment.user.login == 'AayushSaini101'
+        if: contains(github.event.comment.body, '/vote') && contains(env.USERNAMES, github.event.comment.user.login)
         run: gh issue edit ${{ github.event.issue.number }} --add-label "vote"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
