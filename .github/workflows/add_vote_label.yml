@@ -2,7 +2,7 @@ name: Add label to PR on comment
 
 on:
   issue_comment:
-    types: [created]
+    types: [ created ]
 
 jobs:
   build:
@@ -16,34 +16,60 @@ jobs:
         run: |
           echo "Comment body: ${{ github.event.comment.body }}" | ls
 
-       # Extract usernames from JSON file
-      - name: Extract usernames
-        id: extract_usernames
-        run: |
-          cat users.json | grep -o '"github": "[^"]*' | grep -o '[^"]*$' > usernames.txt
-          echo "Usernames extracted:"
-          cat usernames.txt
-          echo "::set-output name=usernames::$(cat usernames.txt)"
+      - name: Verify TSC Member
+        id: verify_member
+        uses: actions/github-script@v6
 
-      # Extracting the names
-      - name: Set usernames environment variable
-        id: set_usernames
-        run:
-          names=$(cat usernames.txt)
-          names=$(echo $names | tr '\n' ', ')
-          echo "::set-output name=names::$names"
+        script: |
+          const fs = require('fs');
+          const filePath = '../../users.json';
+          fs.readFile(filePath, 'utf8', (err, data) => {
+            try {
+ 
+           const jsonData = JSON.parse(data);
+  
+           // Iterate over each object in the array
+             jsonData.forEach(item => {
+             console.log('Name:', item.name);
 
-#      - name: Extracting the user name
-#        id: extracting_usernames
+             });
+           } catch (parseError) {
+               console.error('Error parsing JSON data:', parseError);
+           }
+          });
+
+
+
+
+
+#       # Extract usernames from JSON file
+#      - name: Extract usernames
+#        id: extract_usernames
+#        run: |
+#          cat users.json | grep -o '"github": "[^"]*' | grep -o '[^"]*$' > usernames.txt
+#          echo "Usernames extracted:"
+#          cat usernames.txt
+#          echo "::set-output name=usernames::$(cat usernames.txt)"
+#
+#      # Extracting the names
+#      - name: Set usernames environment variable
+#        id: set_usernames
 #        run:
-#          echo "USERNAMES=${{ steps.set_usernames.output.names }}" >> $GITHUB_ENV
-#          | echo $USERNAMES
-#        env:
-#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          names=$(cat usernames.txt)
+#          names=$(echo $names | tr '\n' ', ')
+#          echo "::set-output name=names::$names"
+#
+##      - name: Extracting the user name
+##        id: extracting_usernames
+##        run:
+##          echo "USERNAMES=${{ steps.set_usernames.output.names }}" >> $GITHUB_ENV
+##          | echo $USERNAMES
+##        env:
+##          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add the label
         if: contains(github.event.comment.body, '/vote') && contains(env.NAME, github.event.comment.user.login)
         run: gh issue edit ${{ github.event.issue.number }} --add-label "vote"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NAME: 'AayushSaini101'
+           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           NAME: 'AayushSaini101'.'
