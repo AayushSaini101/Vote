@@ -25,21 +25,21 @@ jobs:
           cat usernames.txt
           echo "::set-output name=usernames::$(cat usernames.txt)"
 
-      # Extracting the names
-      - name: Set usernames environment variable
-        id: set_usernames
-        run:
-          names=$(cat usernames.txt)
-          names=$(echo $names | tr '\n' ', ')
-          echo "::set-output name=names::$names"
-
-      - name: Extracting the user name
-        id: extracting_usernames
-        run:
-          echo "USERNAMES=${{ steps.set_usernames.output.names }}" >> $GITHUB_ENV
+#      # Extracting the names
+#      - name: Set usernames environment variable
+#        id: set_usernames
+#        run:
+#          names=$(cat usernames.txt)
+#          names=$(echo $names | tr '\n' ', ')
+#          echo "::set-output name=names::$names"
+#
+#      - name: Extracting the user name
+#        id: extracting_usernames
+#        run:
+#          echo "USERNAMES=${{ steps.set_usernames.output.names }}" >> $GITHUB_ENV
 
       - name: Add the label
-        if: contains(github.event.comment.body, '/vote') && contains(env.USERNAMES, github.event.comment.user.login)
+        if: contains(github.event.comment.body, '/vote') && contains("AayushSaini101", github.event.comment.user.login)
         run: gh issue edit ${{ github.event.issue.number }} --add-label "vote"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
