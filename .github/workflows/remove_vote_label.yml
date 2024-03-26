@@ -9,13 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Get the comment body
-        id: get_comment_body
-        run: |
-          echo "Comment body: ${{ github.event.comment.body }}"
-
       - name: Verify TSC Member
         id: verify_member
         uses: vote/.github/workflows/verify

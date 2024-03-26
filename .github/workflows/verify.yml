@@ -1,6 +1,10 @@
 name: 'Verify TSC Member'
 description: 'Verifies whether the commenter is a TSC member.'
 
+on:
+  issue_comment:
+    types: [created]
+    
 jobs:
   build:
     runs-on: ubuntu-latest
