@@ -7,8 +7,7 @@ on:
     
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    using: "composite"
     steps:
       - name: Verify TSC Member
         id: verify_member
