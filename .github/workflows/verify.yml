@@ -8,8 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Verify TSC Member
-        id: verify_member
-        uses: actions/checkout@v3
+      - id: verify_member
+      - uses: actions/checkout@v3
         with:
           script: |
             const fs = require('fs');
