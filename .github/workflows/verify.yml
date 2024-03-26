@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  build:
+  verifyTSCMember:
     runs-on: ubuntu-latest
     steps:
       - name: Verify TSC Member
