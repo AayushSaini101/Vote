@@ -13,7 +13,7 @@ jobs:
 
       - name: Verify TSC Member
         id: verify_member
-        uses: ./github/workflows/
+        uses: ./.github/actions/verifyMember
         
       - name: Add the label
         if: contains(github.event.comment.body, '/vote') && steps.verify_member.outputs.isTSCMember =='true'
