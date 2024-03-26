@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Verify TSC Member
         id: verify_member
-        uses: actions/github-script@v6
+        uses: actions/checkout@v3
         with:
           script: |
             const fs = require('fs');
