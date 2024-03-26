@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Verify TSC Member
         id: verify_member
-        uses: vote/.github/workflows/verify@main
+        uses: ./github/workflows/verify@main
 
       - name: Add the label
         if: contains(github.event.comment.body, '/cancel-vote') && steps.verify_member.outputs.isTSCMember =='true'
