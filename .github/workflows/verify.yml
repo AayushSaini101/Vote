@@ -1,13 +1,11 @@
 name: 'Verify TSC Member'
-description: 'Verifies whether the commenter is a TSC member.'
 
 on:
-  issue_comment:
-    types: [created]
-    
+  workflow_call:
+
 jobs:
   build:
-    using: "composite"
+    runs-on: ubuntu-latest
     steps:
       - name: Verify TSC Member
         id: verify_member
