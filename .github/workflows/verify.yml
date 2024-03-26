@@ -5,7 +5,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-  steps:
+    steps:
       - name: Verify TSC Member
         id: verify_member
         uses: actions/github-script@v6

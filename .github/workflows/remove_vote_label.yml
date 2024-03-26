@@ -17,6 +17,7 @@ jobs:
           echo "Comment body: ${{ github.event.comment.body }}"
 
       - name: Verify TSC Member
+        id: verify_member
         uses: vote/.github/workflows/verify
 
 
