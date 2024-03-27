@@ -3,6 +3,11 @@ outputs:
   version:
     description: 'Verify Member'
     value: ${{ steps.verify_member.output.isTSCMember }}
+inputs:
+  authorName:
+    description: 'Name of the Author'
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -13,10 +18,10 @@ runs:
           script: |
             const fs = require('fs');
             const filePath = 'TSC_MEMBERS.json';
-            const commenterName = context.payload.sender.login;
+            const commenterName = ${{inputs.authorName}};
+            console.log(commenterName)
             let isTSCMember = false;
-            console.log(context.payload.sender.login)
-         
+           
             function readFileAndProcess(callback) {
               fs.readFile(filePath, 'utf8', (err, data) => {
                 if (err) {
