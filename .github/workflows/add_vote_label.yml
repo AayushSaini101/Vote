@@ -19,6 +19,8 @@ jobs:
         uses: ./.github/actions/verifyMember
         with:
           authorName: ${{github.event.comment.user.login}}"
+        run: |
+          echo "${{github.event.comment.user.login}}" | echo "${{github.event.comment}}" 
 
       - name: Add the label
         if: contains(github.event.comment.body, '/vote') && steps.verify_member.output.isTSCMember =='true'
