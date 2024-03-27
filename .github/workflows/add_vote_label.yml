@@ -23,6 +23,56 @@ jobs:
           else
             gh issue edit ${{ github.event.issue.number }} --add-label "vote"
           fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+      - name: Send unauthorized attempt message
+        if: steps.verify_member.outputs.isTSCMember != 'true'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            const commentText = `❌ @${{github.actor}} is not authorized to use the Bounty Program's commands.
+            These commands can only be used by members of the [Bounty Team](https://github.com/orgs/asyncapi/teams/bounty_team).`;
+
+            console.log(`❌ @${{github.actor}} made an unauthorized attempt to use a Bounty Program's command.`);
+            github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentText
+              
+        name: Add label to PR on comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Verify the person
+        id: verify_member
+        uses: ./.github/actions/verifyMember
+        with:
+          authorName: "${{github.event.comment.user.login}}"
+
+      - name: Add the vote label
+        if: contains(github.event.comment.body, '/vote') && ${{ steps.verify_member.outputs.output_name }} == 'true'
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            gh pr edit ${{ github.event.pull_request.number }} --add-label "vote"
+          else
+            gh issue edit ${{ github.event.issue.number }} --add-label "vote"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
 
       - name: Send unauthorized attempt message
         if: steps.verify_member.outputs.isTSCMember != 'true'
@@ -40,3 +90,9 @@ jobs:
                 repo: context.repo.repo,
                 body: commentText
               })
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+         
+
+         
