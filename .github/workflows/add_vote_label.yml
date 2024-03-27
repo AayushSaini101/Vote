@@ -21,7 +21,7 @@ jobs:
           authorName: ${{github.event.comment.user.login}}"
 
       - name: Add the label
-        if: contains(github.event.comment.body, '/vote') && steps.verify_member.output.isTSCMember =='true'
+        if: contains(github.event.comment.body, '/vote')
         run:
             if [ "${{ github.event_name }}" = "pull_request" ]; then
               gh pr edit ${{ github.event.pull_request.number }} --add-label "vote"
