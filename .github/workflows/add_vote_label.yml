@@ -43,6 +43,5 @@ jobs:
             gh issue edit ${{ github.event.issue.number }} --add-label "vote"
           fi
         env:
-        GH_TOKEN: ${{ github.token }}
-
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
    
