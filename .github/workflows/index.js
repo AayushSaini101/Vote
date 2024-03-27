@@ -1,40 +1,31 @@
+const fs = require('fs').promises; // using promises version of fs
+const filePath = 'TSC_MEMBERS.json';
+const commenterName = '${{inputs.authorName}}';
+console.log(commenterName);
+let isTSCMember = false;
 
+async function readFileAndProcess() {
+  try {
+    const data = await fs.readFile(filePath, 'utf8');
+    const jsonData = JSON.parse(data);
+    // Iterate over each object in the array
+    jsonData.forEach(item => {
+      if (item.github === commenterName) {
+        isTSCMember = true;
+      }
+    });
+    return isTSCMember;
+  } catch (error) {
+    throw error;
+  }
+}
 
-// Path to your JSON file
-const filePath = '../../TSC_MEMBERS.json';
-
- const fs = require('fs');
-
-            const commenterName= "AayushSaini101"
-            let isTSCMember = false;
-
-            function readFileAndProcess(callback) {
-              fs.readFile(filePath, 'utf8', (err, data) => {
-                if (err) {
-                  callback(err, null);
-                  return;
-                }
-                try {
-                  const jsonData = JSON.parse(data);
-                  // Iterate over each object in the array
-                  jsonData.forEach(item => {
-                    if (item.github === commenterName) {
-                      isTSCMember = true;
-                    }
-                  });
-                  // Invoke the callback function with the result
-                  callback(null, isTSCMember);
-                } catch (parseError) {
-                  callback(parseError, null);
-                }
-              });
-            }
-
-            readFileAndProcess((error, result) => {
-              if (error) {
-                console.error('Error:', error);
-              } else {
-                console.log('Is TSC Member:', result);
-              //  core.setOutput('isTSCMember', isTSCMember);
-              }
-            });
+(async () => {
+  try {
+    const result = await readFileAndProcess();
+    console.log('Is TSC Member:', result);
+    core.setOutput('isTSCMember', result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+})();

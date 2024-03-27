@@ -1,4 +1,4 @@
-name: Remove vote label
+name: Verification of the Vote
 
 on:
   issue_comment:
@@ -25,8 +25,8 @@ jobs:
         with:
           script: |
             const commentText = `❌ @${{github.actor}} is not authorized to vote.
-             These commands can only be used by members of the [Bounty Team](https://github.com/orgs/asyncapi/teams/bounty_team).`;
-             console.log(`❌ @${{github.actor}} made an unauthorized attempt to use a Bounty Program's command.`);
+             These commands can only be used by TSC members of the [TSC Members](https://github.com/asyncapi/community/blob/master/TSC_MEMBERS.json).`;
+             console.log(`❌ @${{github.actor}} made an unauthorized attempt to use a vote command.`);
              github.rest.issues.createComment({
                  issue_number: context.issue.number,
                  owner: context.repo.owner,
