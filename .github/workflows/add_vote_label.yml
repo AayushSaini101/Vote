@@ -27,13 +27,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-
-
       - name: Send unauthorized attempt message
         if: steps.verify_member.outputs.isTSCMember != 'true'
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const commentText = `❌ @${{github.actor}} is not authorized to use the Bounty Program's commands.
             These commands can only be used by members of the [Bounty Team](https://github.com/orgs/asyncapi/teams/bounty_team).`;
