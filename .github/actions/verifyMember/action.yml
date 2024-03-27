@@ -49,6 +49,6 @@ runs:
               console.error('Error:', error);
             } else {
               console.log('Is TSC Member:', result);
-              
+              core.setOutput('isTSCMember', result);
             }
           });
