@@ -17,7 +17,7 @@ jobs:
           authorName: "${{github.event.comment.user.login}}"
 
       - name: Sending authorised 
-        if:  contains(github.event.comment.body, '/vote') && steps.verify_member.outputs.output_name == 'false' && ${{ github.actor }} != "git-vote[bot]"
+        if:  contains(github.event.comment.body, '/vote') && steps.verify_member.output.isTSCMember  == 'false' && ${{ github.actor }} != "git-vote[bot]"
         uses: actions/github-script@v6
         with:
          script: |
