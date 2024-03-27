@@ -18,7 +18,7 @@ runs:
         script: |
           const fs = require('fs');
           const filePath = 'TSC_MEMBERS.json';
-          const commenterName = '${{ inputs.authorName }}';
+          const commenterName = '${{ inputs.authorName.trim().replace(/"$/, '') }}'; // Remove trailing double quote
           console.log(commenterName);
           let isTSCMember = false;
          
