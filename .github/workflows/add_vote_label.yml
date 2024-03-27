@@ -10,11 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get the comment body
-        id: get_comment_body
-        run: |
-          echo "Comment body: ${{ github.event.comment.body }}" | ls
-
       - name: Verify the person
         uses: ./.github/actions/verifyMember
         with:
