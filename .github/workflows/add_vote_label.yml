@@ -16,11 +16,12 @@ jobs:
 
       - name: Add the label
         if: contains(github.event.comment.body, '/vote') && ${{ steps.verify_member.outputs.output_name }} =='true'
-        run:
+        run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
           gh pr edit ${{ github.event.pull_request.number }} --add-label "vote"
           else
           gh issue edit ${{ github.event.issue.number }} --add-label "vote"
           fi
+        
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
