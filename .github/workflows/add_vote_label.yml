@@ -25,7 +25,7 @@ jobs:
          script: |
            const commentText = `❌ @${{github.actor}} is not authorized to vote.
             These commands can only be used by members of the [Bounty Team](https://github.com/orgs/asyncapi/teams/bounty_team).`;
-
+            console.log(steps.verify_member.outputs)
             console.log(`❌ @${{github.actor}} made an unauthorized attempt to use a Bounty Program's command.`);
             github.rest.issues.createComment({
                 issue_number: context.issue.number,
