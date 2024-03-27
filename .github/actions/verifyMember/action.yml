@@ -1,19 +1,18 @@
-name: 'Verify TSC Member'
-
-on:
-  workflow_call:
-
-jobs:
-  verifyTSCMember:
-    runs-on: ubuntu-latest
-    steps:
+name: 'Verify Member'
+outputs:
+  version:
+    description: 'Verify Member'
+    value: ${{ steps.verify_member.output.isTSCMember }}
+runs:
+  using: "composite"
+  steps:
       - name: Verify TSC Member
-      - id: verify_member
-      - uses: actions/checkout@v3
+        id: verify_member
+        uses: actions/github-script@v6
         with:
           script: |
             const fs = require('fs');
-            const filePath = 'users.json';
+            const filePath = 'TSC_MEMBERS.json';
             const commenterName = context.payload.sender.login;
             let isTSCMember = false;
             
