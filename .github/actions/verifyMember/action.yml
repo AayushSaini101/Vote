@@ -53,6 +53,5 @@ runs:
             }
           });
 
-    - name: Debug Output
-      run: echo "IS_TSC_MEMBER=${{ steps.verify_member.outputs.isTSCMember }}" >> $GITHUB_ENV
+ 
 
