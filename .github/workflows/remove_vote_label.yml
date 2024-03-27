@@ -41,12 +41,5 @@ jobs:
           else
             gh issue edit ${{ github.event.issue.number }} --remove-label "vote"
           fi
-
-          # Send message if the member is not authorized
-          if [ "${{ steps.verify_member.outputs.isTSCMember }}" != "true" ]; then
-            echo "Unauthorized member. Cannot remove label."
-            # Add your message sending logic here, for example:
-            # echo "You are not authorized to perform this action."
-          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
