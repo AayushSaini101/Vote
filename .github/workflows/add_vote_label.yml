@@ -16,7 +16,7 @@ jobs:
           authorName: "${{github.event.comment.user.login}}"
 
       - name: Sending authorised 
-        if:  contains(github.event.comment.body, '/vote') &&
+        if:  contains(github.event.comment.body, '/vote')
         uses: actions/github-script@v6
         with:
          script: |
