@@ -18,7 +18,7 @@ runs:
         script: |
           const fs = require('fs');
           const filePath = 'TSC_MEMBERS.json';
-          const commenterName = '${{ inputs.authorName }}';
+          const commenterName = ${{ inputs.authorName }};
           console.log(commenterName);
           let isTSCMember = false;
          
@@ -49,6 +49,6 @@ runs:
               console.error('Error:', error);
             } else {
               console.log('Is TSC Member:', result);
-              core.setOutput('isTSCMember', isTSCMember);
+              
             }
           });
