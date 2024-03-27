@@ -16,7 +16,6 @@ jobs:
           echo "Comment body: ${{ github.event.comment.body }}" | ls
 
       - name: Verify the person
-        uses: ./.github/actions/verifyMember
         with:
           authorName: ${{github.event.comment.user.login}}"
         run: |
