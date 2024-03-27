@@ -1,57 +1,58 @@
 name: Verify Member
+outputs:
+  version:
+    description: 'Verify Member'
+    value: ${{steps.verify_member.outputs.isTSCMember}}
+inputs:
+  authorName:
+    description: 'Name of the Author'
+    required: true
 
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  verify_member:
-    runs-on: ubuntu-latest
-    outputs:
-      isTSCMember: ${{ steps.verify_member.outputs.isTSCMember }}
-    steps:
-      - name: Verify TSC Member
-        id: verify_member
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const filePath = 'TSC_MEMBERS.json';
-            const commenterName = '${{inputs.authorName}}';
-            console.log(commenterName);
-            let isTSCMember = false;
-           
-            function readFileAndProcess(callback) {
-              fs.readFile(filePath, 'utf8', (err, data) => {
-                if (err) {
-                  callback(err, null);
-                  return;
-                }
-                try {
-                  const jsonData = JSON.parse(data);
-                  // Iterate over each object in the array
-                  jsonData.forEach(item => {
-                    if (item.github === commenterName) {
-                      isTSCMember = true;
-                    }
-                  });
-                  // Invoke the callback function with the result
-                  callback(null, isTSCMember);
-                } catch (parseError) {
-                  callback(parseError, null);
-                }
-              });
-            }
-            
-            readFileAndProcess((error, result) => {
-              if (error) {
-                console.error('Error:', error);
-              } else {
-                console.log('Is TSC Member:', result);
-                core.setOutput('isTSCMember', result);
+runs:
+  using: "composite"
+  steps:
+    - name: Verify TSC Member
+      id: verify_member
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const filePath = 'TSC_MEMBERS.json';
+          const commenterName = '${{inputs.authorName}}';
+          console.log(commenterName);
+          let isTSCMember = false;
+         
+          function readFileAndProcess(callback) {
+            fs.readFile(filePath, 'utf8', (err, data) => {
+              if (err) {
+                callback(err, null);
+                return;
               }
-            })
-      - name: Debug Output
-        run: echo "IS_TSC_MEMBER=${{ steps.verify_member.outputs.isTSCMember }}" >> $GITHUB_ENV
+              try {
+                const jsonData = JSON.parse(data);
+                // Iterate over each object in the array
+                jsonData.forEach(item => {
+                  if (item.github === commenterName) {
+                    isTSCMember = true;
+                  }
+                });
+                // Invoke the callback function with the result
+                callback(null, isTSCMember);
+              } catch (parseError) {
+                callback(parseError, null);
+              }
+            });
+          }
           
+          readFileAndProcess((error, result) => {
+            if (error) {
+              console.error('Error:', error);
+            } else {
+              console.log('Is TSC Member:', result);
+              core.setOutput('isTSCMember', result);
+            }
+          });
+
+    - name: Debug Output
+      run: echo "IS_TSC_MEMBER=${{ steps.verify_member.outputs.isTSCMember }}" >> $GITHUB_ENV
+
