@@ -581,6 +581,16 @@
 		"repos": [
 			"protobuf-schema-parser"
 		]
-	}
+	},
 
+		{
+		"name": "",
+		"github": "AayushSaini101",
+		"slack": "U03AC4G51H8",
+		"availableForHire": false,
+		"company": "mtrail GmbH",
+		"repos": [
+			"protobuf-schema-parser"
+		]
+	}
 ]
