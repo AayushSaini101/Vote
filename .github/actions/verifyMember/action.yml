@@ -15,6 +15,8 @@ runs:
             const filePath = 'TSC_MEMBERS.json';
             const commenterName = context.payload.sender.login;
             let isTSCMember = false;
+            console.log(commenterName)
+            
             
             function readFileAndProcess(callback) {
               fs.readFile(filePath, 'utf8', (err, data) => {
