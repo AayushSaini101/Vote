@@ -16,7 +16,8 @@ jobs:
           authorName: "${{github.event.comment.user.login}}"
 
       - name: Sending authorised 
-        if:  contains(github.event.comment.body, '/voted') 
+        if:  contains(github.event.comment.body, '/voted')
+        uses: actions/github-script@v6
         with:
          script: |
            const commentText = `❌ @${{github.actor}} is not authorized to vote.
