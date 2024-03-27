@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4dfdf25-2a23-47e1-9d2b-14f60943941a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/add_vote_label.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/add_vote_label.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitvote.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.gitvote.yml" afterDir="false" />
-    </list>
+    <list default="true" id="e4dfdf25-2a23-47e1-9d2b-14f60943941a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
