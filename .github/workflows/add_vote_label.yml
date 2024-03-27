@@ -28,11 +28,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send unauthorized attempt message
-        if: steps.verify_member.outputs.isTSCMember != 'true'
+        if: steps.verify_member.outputs.isTSCMember != 'true' && ${{github.actor}} != 'git-vote[bot]'
         uses: actions/github-script@v6
         with:
           script: |
-            const commentText = `❌ @${{github.actor}} is not authorized to use the Bounty Program's commands.
+            const commentText = `❌ @${{github.actor}} is not authorized to vote.
             These commands can only be used by members of the [Bounty Team](https://github.com/orgs/asyncapi/teams/bounty_team).`;
 
             console.log(`❌ @${{github.actor}} made an unauthorized attempt to use a Bounty Program's command.`);
