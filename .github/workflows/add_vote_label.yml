@@ -19,7 +19,7 @@ jobs:
         run: echo "IS_TSC_MEMBER=${{ steps.verify_member.outputs.version }}" >> $GITHUB_ENV
         
       - name: Sending authorised 
-        if:  contains(github.event.comment.body, '/vote') && IS_TSC_MEMBER == false 
+        if:  contains(github.event.comment.body, '/vote') && env.IS_TSC_MEMBER == false 
         uses: actions/github-script@v6
         with:
          script: |
@@ -35,7 +35,7 @@ jobs:
 
 
       - name: Add the vote label 
-        if: contains(github.event.comment.body, '/vote') && IS_TSC_MEMBER == true
+        if: contains(github.event.comment.body, '/vote') && env.IS_TSC_MEMBER == true
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             gh pr edit ${{ github.event.pull_request.number }} --add-label "vote"
