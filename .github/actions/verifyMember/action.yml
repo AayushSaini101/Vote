@@ -2,7 +2,7 @@ name: Verify Member
 outputs:
   version:
     description: 'Verify Member'
-    value: ${{steps.verify_member.output.isTSCMember}}
+    value: ${{steps.verify_member.outputs.isTSCMember}}
 inputs:
   authorName:
     description: 'Name of the Author'
