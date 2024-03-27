@@ -31,6 +31,11 @@ jobs:
                 body: commentText
               })
 
+      - name: Checking value
+        id: checkvalue
+        run: |
+          echo "Comment body: ${{ steps.verify_member.output.isTSCMember }}" | ls
+
       - name: Add the vote label 
         if: contains(github.event.comment.body, '/vote') && steps.verify_member.output.isTSCMember == true
         run: |
