@@ -18,7 +18,7 @@ jobs:
       - name: Verify the person
         uses: ./.github/actions/verifyMember
         with:
-          authorName: ${{ context.payload.sender.login }}"
+          authorName: ${{github.event.comment.user.login}}"
 
       - name: Add the label
         if: contains(github.event.comment.body, '/vote') && steps.verify_member.output.isTSCMember =='true'
