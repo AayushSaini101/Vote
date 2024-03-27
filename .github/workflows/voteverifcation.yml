@@ -38,14 +38,14 @@ jobs:
         if: (contains(github.event.comment.body, '/cancel-vote') || contains(github.event.comment.body, '/vote')) && env.IS_TSC_MEMBER =='true'
         run: |
           if [ "${{ github.event.comment.body }}" == "/cancel-vote" ]; then
-            if [ "${{ github.event.issue.pull_request }}" = "null" ]; then
+            if [ "${{ github.event_name }}" != "pull_request" ]; then
               gh issue edit ${{ github.event.issue.number }} --remove-label "vote"
             else
               gh pr edit ${{ github.event.issue.number }} --remove-label "vote"
             fi
           fi
           if [ "${{ github.event.comment.body }}" == "/vote" ]; then
-            if [ "${{ github.event.issue.pull_request }}" = "null" ]; then
+            if [ "${{ github.event_name }}" != "pull_request" ]; then
               gh issue edit ${{ github.event.issue.number }} --add-label "vote"
             else
               gh pr edit ${{ github.event.issue.number }} --add-label "vote"
