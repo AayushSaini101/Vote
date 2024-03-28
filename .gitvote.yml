@@ -3,7 +3,5 @@ profiles:
     duration: 2m
     pass_threshold: 51
     periodic_status_check: "1 week"
-    allowed_voters:
-      teams:
-        - tsc_members
+
         
