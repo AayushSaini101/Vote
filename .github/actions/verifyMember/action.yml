@@ -11,47 +11,29 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install js-yaml
+      run: npm install js-yaml
+      
     - name: Verify TSC Member
       id: verify_member
       uses: actions/github-script@v6
       with:
         script: |
-          const fs = require('fs');
-          const filePath = 'TSC_MEMBERS.json';
-          const commenterName = '${{inputs.authorName}}';
-          console.log(commenterName);
-          let isTSCMember = false;
-         
-          function readFileAndProcess(callback) {
-            fs.readFile(filePath, 'utf8', (err, data) => {
-              if (err) {
-                callback(err, null);
-                return;
-              }
-              try {
-                const jsonData = JSON.parse(data);
-                // Iterate over each object in the array
-                jsonData.forEach(item => {
-                  if (item.github === commenterName) {
-                    isTSCMember = true;
-                  }
-                });
-                // Invoke the callback function with the result
-                callback(null, isTSCMember);
-              } catch (parseError) {
-                callback(parseError, null);
-              }
-            });
-          }
-          
-          readFileAndProcess((error, result) => {
-            if (error) {
-              console.error('Error:', error);
-            } else {
-              console.log('Is TSC Member:', result);
-              core.setOutput('isTSCMember', result);
-            }
-          });
-
- 
-
+           const yaml = require('js-yaml');
+           const fs = require('fs');
+           const commenterName = 'AayushSaini101';
+           let isTSCMember = false;
+           try {
+               // Load YAML file
+               const data = yaml.load(fs.readFileSync('../../MAINTAINERS.yaml', 'utf8'));
+               // Iterate over each person object
+               data.forEach(person => {
+                   // Check if the person is a TSC member or not
+                   if (person.isTscMember && person.github == commenterName) {
+                       isTSCMember = true;
+                       core.setOutput('isTSCMember', result);
+                   }
+               });
+           } catch (e) {
+               console.log(e);
+           }
