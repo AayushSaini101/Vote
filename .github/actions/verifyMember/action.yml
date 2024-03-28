@@ -14,13 +14,13 @@ runs:
     - name: Checkout repository
       uses: actions/checkout@v2
       
-    - name: Setup Nodejs
-      uses: actions/setup-node@v2
-      with:
-           node-version: 16
     - name: Install the dependencies
       run: npm install js-yaml
-    
+      shell: bash
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+      
     - name: Verify TSC Member
       id: verify_member
       uses: actions/github-script@v6
