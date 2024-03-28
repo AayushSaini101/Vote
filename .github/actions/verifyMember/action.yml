@@ -11,8 +11,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install js-yaml
-      run: npm install js-yaml
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    - run: npm ci
+    - run: npm install js-yaml
       
     - name: Verify TSC Member
       id: verify_member
