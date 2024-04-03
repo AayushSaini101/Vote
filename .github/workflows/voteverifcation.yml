@@ -24,8 +24,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const commentText = `❌ @${{github.actor}} is not authorized to vote.
-             These commands can only be used by TSC members of the [TSC Members](https://github.com/asyncapi/community/blob/master/TSC_MEMBERS.json).`;
+            const commentText = `User ❌ @${{github.actor}} is not a [TSC Member](https://github.com/asyncapi/community/blob/master/TSC_MEMBERS.json).`;
              console.log(`❌ @${{github.actor}} made an unauthorized attempt to use a vote command.`);
              github.rest.issues.createComment({
                  issue_number: context.issue.number,
