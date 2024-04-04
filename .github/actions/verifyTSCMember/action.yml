@@ -1,7 +1,7 @@
 name: Verify TCS Member
 
 outputs:
-  isTSCMember:
+  version:
     description: 'true/false'
     value: ${{ steps.verify_member.outputs.isTSCMember }}
 
@@ -15,11 +15,11 @@ runs:
   steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      
+
     - name: Install the dependencies
       run: npm install js-yaml@^4.0.1
       shell: bash
-      
+
     - name: Verify TSC Member
       id: verify_member
       uses: actions/github-script@v6
@@ -30,23 +30,19 @@ runs:
           const commenterName = '${{ inputs.authorName }}';
           let isTSCMember = false;
           try {
-            // Load YAML file
-            const data = yaml.load(fs.readFileSync('../../MAINTAINERS.yaml', 'utf8'));
-    
-            // Filter persons who are TSC members and whose GitHub username matches commenterName
-            const isTscMember = data.find(person => {
-                return (person.isTscMember === true || person.isTscMember === "true") && person.github === commenterName;
-            });
-            // Check if a TSC member was found
-            if(isTscMember) {
-                isTSCMember = true;
-            }
-            
-            core.setOutput('isTSCMember', isTSCMember);
+              // Load YAML file
+              const data = yaml.load(fs.readFileSync('../../MAINTAINERS.yaml', 'utf8'));
+
+              // Filter persons who are TSC members and whose GitHub username matches commenterName
+              const filteredPersons = data.filter(person => {
+                  return (person.isTscMember === true || person.isTscMember === "true") && person.github === commenterName;
+              });
+              // Log filtered persons
+              filteredPersons.forEach(person => {
+                  isTSCMember = true;
+              });
+              
+              core.setOutput('isTSCMember', isTSCMember);
           } catch (e) {
-            console.log(e);
+              console.log(e);
           }
-
-
-
-
