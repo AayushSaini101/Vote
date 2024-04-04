@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify the person
         id: verify_member
-        uses: ./.github/actions/verifyMember
+        uses: ./.github/actions/verifyTSCMember
         with:
           authorName: "${{github.event.comment.user.login}}"
         
