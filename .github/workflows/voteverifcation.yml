@@ -39,7 +39,7 @@ jobs:
           
             
       - name: Add the label
-        if: (contains(github.event.comment.body, '/cancel-vote') || contains(github.event.comment.body, '/vote')) && ${{steps.verify_member.outputs.isTSCMember} == true
+        if: (contains(github.event.comment.body, '/cancel-vote') || contains(github.event.comment.body, '/vote')) && ${{steps.verify_member.outputs.isTSCMember}} == true
         run: |
           if [ "${{ github.event.comment.body }}" == "/cancel-vote" ]; then
             if [ "${{ github.event_name }}" != "pull_request" ]; then
