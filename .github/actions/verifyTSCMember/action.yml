@@ -1,4 +1,4 @@
-name: Verify TCS Member Member
+name: Verify TCS Member
 
 outputs:
   isTSCMember:
@@ -46,3 +46,7 @@ runs:
           } catch (e) {
             console.log(e);
           }
+
+
+
+
