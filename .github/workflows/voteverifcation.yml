@@ -17,14 +17,14 @@ jobs:
           authorName: "${{github.event.comment.user.login}}"
           
       - name: Set Output to Environment Variable
-        run: echo "IS_TSC_MEMBER=${{ steps.verify_member.outputs.isTSCMember}}" >> $GITHUB_ENV
+        run: echo "IS_TSC_MEMBER=${{ steps.verify_member.outputs.version.isTSCMember}}" >> $GITHUB_ENV
 
       - name: Checking whether the person authenticity.
         if:  contains(github.event.comment.body, '/vote') || contains(github.event.comment.body, '/cancel-vote')
         uses: actions/github-script@v6
         with:
           script : |
-               const isTSCMember = ${{ steps.verify_member.outputs.isTSCMember}}
+               const isTSCMember = ${{ steps.verify_member.outputs.version.isTSCMember}}
                   if(!isTSCMember) {
                    const commentText = `User ❌ @${{ github.actor }} is not a [TSC Member](https://github.com/asyncapi/community/blob/master/TSC_MEMBERS.json).`;
                    console.log(`User ❌ @${{ github.actor }} is not a TSC Member`);
@@ -40,7 +40,7 @@ jobs:
           
             
       - name: Add the label
-        if: (contains(github.event.comment.body, '/cancel-vote') || contains(github.event.comment.body, '/vote')) && ${{steps.verify_member.outputs.isTSCMember}} == true
+        if: (contains(github.event.comment.body, '/cancel-vote') || contains(github.event.comment.body, '/vote')) && ${{steps.verify_member.outputs.version.isTSCMember}} == true
         run: |
           if [ "${{ github.event.comment.body }}" == "/cancel-vote" ]; then
             if [ "${{ github.event_name }}" != "pull_request" ]; then
