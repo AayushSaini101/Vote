@@ -1,6 +1,6 @@
 name: Verify Member
 outputs:
-  version:
+  member:
     description: 'Verify Member'
     value: ${{steps.verify_member.outputs.isTSCMember}}
 inputs:
