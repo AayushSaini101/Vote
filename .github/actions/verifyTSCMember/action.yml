@@ -1,7 +1,7 @@
 name: Verify TCS Member
 
 outputs:
-  version:
+  isTSCMember:
     description: 'true/false'
     value: ${{ steps.verify_member.outputs.isTSCMember }}
 
