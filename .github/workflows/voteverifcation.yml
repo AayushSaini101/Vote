@@ -25,7 +25,7 @@ jobs:
         with:
           script: |
             const isTSCMember = ${{env.IS_TSC_MEMBER}};
-             if (isTSCMember) {
+             if (!isTSCMember) {
                 const commentText = `User ❌ @${{ github.actor }} is not a [TSC Member](https://github.com/asyncapi/community/blob/master/TSC_MEMBERS.json).`;
                  console.log(`User ❌ @${{ github.actor }} is not a TSC Member`);
                  github.rest.issues.createComment({
