@@ -16,7 +16,7 @@ jobs:
         with:
           authorName: "${{github.event.comment.user.login}}"
         
-      - name: Checking whether the person authenticity.
+      - name: Checking the person authenticity.
         if:  contains(github.event.comment.body, '/vote') || contains(github.event.comment.body, '/cancel-vote')
         uses: actions/github-script@v6
         with:
@@ -33,8 +33,7 @@ jobs:
                });
              } else if('${{github.actor}}' != 'git-vote[bot]') {
                 console.log(`User ✅ @${{ github.actor }} is a TSC Member`);
-            }
-          
+            }     
             
       - name: Add the label
         if: (contains(github.event.comment.body, '/cancel-vote') || contains(github.event.comment.body, '/vote')) && ${{ steps.verify_member.outputs.isTSCMember }} =='true'
