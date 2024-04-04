@@ -38,7 +38,7 @@ runs:
                 return (person.isTscMember === true || person.isTscMember === "true") && person.github === commenterName;
             });
             // Check if a TSC member was found
-            if (isTscMember) {
+            if(isTscMember) {
                 isTSCMember = true;
             }
             
