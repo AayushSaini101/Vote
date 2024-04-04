@@ -19,19 +19,25 @@ jobs:
       - name: Set Output to Environment Variable
         run: echo "IS_TSC_MEMBER=${{ steps.verify_member.outputs.version }}" >> $GITHUB_ENV
 
-      - name: Sending unauthorised
-        if: (contains(github.event.comment.body, '/vote') || contains(github.event.comment.body, '/cancel-vote')) && env.IS_TSC_MEMBER == 'false' 
+      - name: Checking whether the person authenticity.
+        if: (contains(github.event.comment.body, '/vote') || contains(github.event.comment.body, '/cancel-vote'))
         uses: actions/github-script@v6
         with:
           script: |
-            const commentText = `User ❌ @${{github.actor}} is not a [TSC Member](https://github.com/asyncapi/community/blob/master/TSC_MEMBERS.json).`;
-             console.log(`❌ @${{github.actor}} made an unauthorized attempt to use a vote command.`);
-             github.rest.issues.createComment({
-                 issue_number: context.issue.number,
-                 owner: context.repo.owner,
-                 repo: context.repo.repo,
+            const isTSCMember = env.IS_TSC_MEMBER === 'false';
+             if (!isTSCMember) {
+                const commentText = `User ❌ @${{ github.actor }} is not a [TSC Member](https://github.com/asyncapi/community/blob/master/TSC_MEMBERS.json).`;
+                 console.log(`User ❌ @${{ github.actor }} is not a TSC Member`);
+                 github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
                  body: commentText
-               })
+               });
+             } else {
+                console.log(`User ✅ @${{ github.actor }} is a TSC Member`);
+            }
+          
             
       - name: Add the label
         if: (contains(github.event.comment.body, '/cancel-vote') || contains(github.event.comment.body, '/vote')) && env.IS_TSC_MEMBER =='true'
