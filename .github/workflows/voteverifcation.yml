@@ -21,20 +21,18 @@ jobs:
         with:
           script: |
              const isTSCMember = ${{ steps.verify_member.outputs.isTSCMember }}
-             if(!isTSCMember) {
+              if (!isTSCMember) {
                 const commentText = `User ❌ @${{ github.actor }} is not a [TSC Member](https://github.com/asyncapi/community/blob/master/TSC_MEMBERS.json).`;
                  console.log(`User ❌ @${{ github.actor }} is not a TSC Member`);
-                 github.rest.issues.createComment({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                 body: commentText
+                  github.rest.issues.createComment({
+                     issue_number: context.issue.number,
+                     owner: context.repo.owner,
+                     repo: context.repo.repo,
+                     body: commentText
                });
-             } 
-             else 
-               if('${{github.actor}}' != 'git-vote[bot]') {
+             } else if('${{github.actor}}' != 'git-vote[bot]') {
                 console.log(`User ✅ @${{ github.actor }} is a TSC Member`);
-             }     
+             }
             
       - name: Add the label
         if: (contains(github.event.comment.body, '/cancel-vote') || contains(github.event.comment.body, '/vote')) && ${{ steps.verify_member.outputs.isTSCMember }} =='true'
