@@ -20,7 +20,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-             const isTSCMember = ${{ steps.verify_member.outputs.isTSCMember }}
+             const isTSCMember = ${{steps.verify_member.outputs.isTSCMember}}
               if (!isTSCMember) {
                 const commentText = `User ❌ @${{ github.actor }} is not a [TSC Member](https://github.com/asyncapi/community/blob/master/TSC_MEMBERS.json).`;
                  console.log(`User ❌ @${{ github.actor }} is not a TSC Member`);
