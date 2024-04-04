@@ -34,7 +34,7 @@ jobs:
                   repo: context.repo.repo,
                  body: commentText
                });
-             } else if(${{github.actor}} != 'git-vote[bot]') {
+             } else if('${{github.actor}}' != 'git-vote[bot]') {
                 console.log(`User ✅ @${{ github.actor }} is a TSC Member`);
             }
           
