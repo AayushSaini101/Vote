@@ -20,7 +20,7 @@ jobs:
         run: echo "IS_TSC_MEMBER=${{ steps.verify_member.outputs.version }}" >> $GITHUB_ENV
 
       - name: Checking whether the person authenticity.
-        if: ((contains(github.event.comment.body, '/vote') || contains(github.event.comment.body, '/cancel-vote'))
+        if: (contains(github.event.comment.body, '/vote') || contains(github.event.comment.body, '/cancel-vote')
         uses: actions/github-script@v6
         with:
           script: |
