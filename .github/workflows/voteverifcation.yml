@@ -24,8 +24,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script : |
-             const isTSCMember = ${{env.IS_TSC_MEMBER}}
-               if (!isTSCMember) {
+               if (!{{ steps.verify_member.outputs.isTSCMember}}) {
                    const commentText = `User ❌ @${{ github.actor }} is not a [TSC Member](https://github.com/asyncapi/community/blob/master/TSC_MEMBERS.json).`;
                    console.log(`User ❌ @${{ github.actor }} is not a TSC Member`);
                    github.rest.issues.createComment({
@@ -36,7 +35,7 @@ jobs:
                   });
                } else if('${{github.actor}}' != 'git-vote[bot]') {
                  console.log(`User ✅ @${{ github.actor }} is a TSC Member`);
-             }
+               } 
           
             
       - name: Add the label
