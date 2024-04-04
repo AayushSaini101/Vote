@@ -31,7 +31,7 @@ runs:
           let isTSCMember = false;
           try {
               // Load YAML file
-              const data = yaml.load(fs.readFileSync('../../MAINTAINERS.yaml', 'utf8'));
+              const data = yaml.load(fs.readFileSync('/MAINTAINERS.yaml', 'utf8'));
 
               // Filter persons who are TSC members and whose GitHub username matches commenterName
               const filteredPersons = data.filter(person => {
