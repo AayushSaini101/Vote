@@ -1,21 +1,21 @@
 name: Verify Member
 outputs:
-  version:
+  isTSCMember:
     description: 'Verify Member'
     value: ${{steps.verify_member.outputs.isTSCMember}}
 inputs:
   authorName:
-    description: 'Name of the Author'
+    description: 'Name of the commentor'
     required: true
 
 runs:
   using: "composite"
   steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       
     - name: Install the dependencies
-      run: npm install js-yaml
+      run: npm install js-yaml@^4.0.1
       shell: bash
       
     - name: Verify TSC Member
@@ -23,22 +23,24 @@ runs:
       uses: actions/github-script@v6
       with:
         script: |
-           const yaml = require('js-yaml');
-           const fs = require('fs');
-           const commenterName = '${{inputs.authorName}}';
-           let isTSCMember = false;
-           try {
-               // Load YAML file
-               const data = yaml.load(fs.readFileSync('MAINTAINERS.yaml', 'utf8'));
-               // Iterate over each person object
-               data.forEach(person => {
-                   // Check if the person is a TSC member or not
-                   if (person.isTscMember && person.github == commenterName) {
-                       isTSCMember = true;
-                       
-                   }
-               });
-           } catch (e) {
-               console.log(e);
-           }
-           core.setOutput('isTSCMember', isTSCMember);
+          const yaml = require('js-yaml');
+          const fs = require('fs');
+          const commenterName = '${{ inputs.authorName }}';
+          let isTSCMember = false;
+          try {
+            // Load YAML file
+            const data = yaml.load(fs.readFileSync('../../MAINTAINERS.yaml', 'utf8'));
+    
+            // Filter persons who are TSC members and whose GitHub username matches commenterName
+            const isTscMember = data.find(person => {
+                return (person.isTscMember === true || person.isTscMember === "true") && person.github === commenterName;
+            });
+            // Check if a TSC member was found
+            if (isTscMember) {
+                isTSCMember = true;
+            }
+            
+            core.setOutput('isTSCMember', isTSCMember);
+          } catch (e) {
+            console.log(e);
+          }
