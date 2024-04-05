@@ -47,7 +47,7 @@ jobs:
             fi
           fi
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ github.token  }}
       - name: Remove the label
         if: contains(github.event.comment.body, '/cancel-vote') && ${{steps.verify_member.outputs.isTSCMember}} == true
         run: |
@@ -59,4 +59,4 @@ jobs:
             fi
           fi
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
