@@ -46,6 +46,7 @@ jobs:
               gh pr edit ${{ github.event.issue.number }} --add-label "vote"
             fi
           fi
+         fi
         env:
           GH_TOKEN: ${{ github.token  }}
       - name: Remove the label
@@ -58,5 +59,6 @@ jobs:
               gh pr edit ${{ github.event.issue.number }} --remove-label "vote"
             fi
           fi
+         fi
         env:
           GH_TOKEN: ${{ github.token }}
