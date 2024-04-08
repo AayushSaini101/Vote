@@ -37,7 +37,7 @@ jobs:
           
 
       - name: Add the label
-        if:  (contains(github.event.comment.body, '/vote') && ${{steps.verify_member.outputs.isTSCMember}} === true)
+        if:  ((contains(github.event.comment.body, '/vote') && steps.verify_member.outputs.isTSCMember === true))
         run: |
           if [ "${{ github.event.comment.body }}" == "/vote" ]; then
             if [ "${{ github.event_name }}" != "pull_request" ]; then
@@ -49,7 +49,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token  }}
       - name: Remove the label
-        if: (contains(github.event.comment.body, '/cancel-vote') && ${{steps.verify_member.outputs.isTSCMember}} === true)
+        if: ((contains(github.event.comment.body, '/cancel-vote') && steps.verify_member.outputs.isTSCMember === true))
         run: |
           if [ "${{ github.event.comment.body }}" == "/cancel-vote" ]; then
             if [ "${{ github.event_name }}" != "pull_request" ]; then
