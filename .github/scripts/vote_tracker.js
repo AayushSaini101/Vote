@@ -2,13 +2,14 @@
 
 const commentBody = process.env.COMMENT_BODY;
 
+
 // Function to extract information from the comment body
 function extractVoteDetails(comment) {
     const votePassedRegex = /The vote \*\*(\w+)\*\*/;
     const percentageRegex = /`(\d+.\d+)%` of the users with binding vote/;
     const thresholdRegex = /passing threshold: `(\d+)%`/;
     const summaryRegex = /### Summary([\s\S]+?)### Binding votes/;
-    const bindingVotesRegex = /### Binding votes \(\d+\)([\s\S]+?)(?=###|$)/;
+    const bindingVotesRegex = /### Binding votes \(\d+\)([\s\S]+?)(?=<details>|$)/;
 
     const votePassedMatch = comment.match(votePassedRegex);
     const percentageMatch = comment.match(percentageRegex);
