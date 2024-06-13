@@ -1,0 +1,30 @@
+name: Vote Tracker
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  track-vote:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.comment.user.login == 'git-vote' &&
+      contains(github.event.comment.body, 'Vote closed')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install PyGithub
+
+      - name: Run vote tracker script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python .github/scripts/vote_tracker.py
