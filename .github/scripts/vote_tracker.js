@@ -12,24 +12,12 @@ function extractVoteDetails(comment) {
     const summaryRegex = /### Summary([\s\S]+?)### Binding votes/;
     const bindingVotesRegex = /### Binding votes \(\d+\)([\s\S]+)/;
 
-    const votePassedMatch = comment.match(votePassedRegex);
-    const percentageMatch = comment.match(percentageRegex);
-    const thresholdMatch = comment.match(thresholdRegex);
-    const summaryMatch = comment.match(summaryRegex);
     const bindingVotesMatch = comment.match(bindingVotesRegex);
 
-    const votePassed = votePassedMatch ? votePassedMatch[1] : null;
-    const percentage = percentageMatch ? percentageMatch[1] : null;
-    const threshold = thresholdMatch ? thresholdMatch[1] : null;
-    const summary = summaryMatch ? summaryMatch[1].trim() : null;
     const bindingVotes = bindingVotesMatch ? bindingVotesMatch[1].trim() : null;
 
     return {
-        votePassed,
-        percentage,
-        threshold,
-        summary,
-        bindingVotes,
+        bindingVotes
     };
 }
 
