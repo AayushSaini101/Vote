@@ -1,7 +1,17 @@
 // .github/scripts/vote_tracker.js
+const fs = require('fs');
+
+// Mock function to check if a user has voted in the last 3 months
+// In a real implementation, you would fetch this information from a database or API
+function hasVotedInLastThreeMonths(user) {
+    // Mock data: Assume @User1 voted recently, @User2 did not
+    const recentVoters = ['@User1'];
+    return recentVoters.includes(user);
+}
 
 const commentBody = process.env.COMMENT_BODY;
 
+console.log("Comment Body:", commentBody);
 
 // Function to extract information from the comment body
 function extractVoteDetails(comment) {
@@ -32,7 +42,7 @@ function extractVoteDetails(comment) {
     };
 }
 
-// Function to clean binding votes section
+// Function to clean binding votes section and format as "name, hasVotedInLastThreeMonths"
 function cleanBindingVotes(bindingVotes) {
     if (!bindingVotes) return null;
 
@@ -41,7 +51,10 @@ function cleanBindingVotes(bindingVotes) {
 
     // Remove all symbols and keep only the data
     const cleanedRows = rows.map(row => {
-        return row.replace(/[|:]/g, '').trim();
+        const cleanedRow = row.replace(/[|:]/g, '').trim();
+        const [user, vote, timestamp] = cleanedRow.split(' ').filter(Boolean);
+        const votedRecently = hasVotedInLastThreeMonths(user) ? 'Yes' : 'No';
+        return `${user}, ${votedRecently}`;
     });
 
     return cleanedRows.join('\n');
@@ -50,8 +63,20 @@ function cleanBindingVotes(bindingVotes) {
 const voteDetails = extractVoteDetails(commentBody);
 
 // Clean the binding votes section
+let bindingVotesOutput = '';
 if (voteDetails.bindingVotes) {
-    voteDetails.bindingVotes = cleanBindingVotes(voteDetails.bindingVotes);
+    bindingVotesOutput = cleanBindingVotes(voteDetails.bindingVotes);
+}
+
+// Write the cleaned binding votes to a file
+const outputPath = '.github/scripts/binding_votes.csv';
+if (bindingVotesOutput) {
+    // Add header to the output
+    const fileContent = 'name, hasVotedInLastThreeMonths\n' + bindingVotesOutput;
+    fs.writeFileSync(outputPath, fileContent);
+    console.log(`Binding votes written to ${outputPath}`);
+} else {
+    console.log('No binding votes to write.');
 }
 
 console.log("Vote Details:", voteDetails);
