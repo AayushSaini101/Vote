@@ -2,8 +2,6 @@
 
 const commentBody = process.env.COMMENT_BODY;
 
-console.log("Comment Body:", commentBody);
-
 // Function to extract information from the comment body
 function extractVoteDetails(comment) {
     const votePassedRegex = /The vote \*\*(\w+)\*\*/;
