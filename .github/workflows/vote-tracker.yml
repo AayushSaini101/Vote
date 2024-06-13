@@ -28,7 +28,7 @@ jobs:
 
       - name: Run vote tracker script
         if: |
-          github.event.comment.user.login == 'git-vote' &&
+          github.event.comment.user.login == 'git-vote[bot]' &&
           contains(github.event.comment.body, 'Vote closed')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
