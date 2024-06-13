@@ -5,11 +5,8 @@ on:
     types: [created]
 
 jobs:
-   build:
+  track-vote:
     runs-on: ubuntu-latest
-    if: |
-      github.event.comment.user.login == 'git-vote' &&
-      contains(github.event.comment.body, 'Vote closed')
 
     steps:
       - name: Checkout repository
@@ -24,7 +21,15 @@ jobs:
         run: |
           pip install PyGithub
 
+      - name: Debug Environment Variables
+        run: |
+          echo "User: ${{ github.event.comment.user.login }}"
+          echo "Comment Body: ${{ github.event.comment.body }}"
+
       - name: Run vote tracker script
+        if: |
+          github.event.comment.user.login == 'git-vote' &&
+          contains(github.event.comment.body, 'Vote closed')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python .github/scripts/vote_tracker.py
