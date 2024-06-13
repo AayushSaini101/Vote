@@ -5,7 +5,7 @@ on:
     types: [created]
 
 jobs:
-  track-vote:
+   build:
     runs-on: ubuntu-latest
     if: |
       github.event.comment.user.login == 'git-vote' &&
