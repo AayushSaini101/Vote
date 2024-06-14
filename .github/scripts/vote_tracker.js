@@ -64,7 +64,7 @@ function verifyVotingTime(newBindingVotes){
   const voteDetails =  JSON.parse(voteDetailsAll)
   voteDetails.forEach(voteinfo=>{
     const index = newBindingVotes.findIndex(vote=>vote.user==voteinfo.name)
-    const currentTime = new Date().toISOString;
+    const currentTime = new Date().toISOString();
     if(index!=-1){
       voteinfo["isVotedInLast3Months"]=true
       voteinfo["lastClosedVoteTime"]=currentTime
