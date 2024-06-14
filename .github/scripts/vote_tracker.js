@@ -45,7 +45,7 @@ const filePath = path.join( 'VoteTracking.json');
 // Check if the file exists
 if (!fs.existsSync(filePath)) {
     // File does not exist, create a new one with initial content
-    const yamlData = fs.readFileSync("../../MAINTAINERS.yml", 'utf8');
+    const yamlData = fs.readFileSync("../../../MAINTAINERS.yaml", 'utf8');
     const parsedData = yaml.load(yamlData);
     const tscMembers = parsedData.filter(entry => entry.isTscMember === true)
                                  .map(entry => ({
