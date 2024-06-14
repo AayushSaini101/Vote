@@ -28,4 +28,10 @@ const bindingVotes = rows.map(row => {
   };
 });
 
-console.log(bindingVotes);
+fs.writeFile('voteTracking.json', JSON.stringify(bindingVotes, null, 2), (err) => {
+  if (err) {
+    console.error('Error writing to JSON file', err);
+  } else {
+    console.log('Binding votes data has been saved to bindingVotes.json');
+  }
+});
