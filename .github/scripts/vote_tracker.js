@@ -33,7 +33,7 @@ const newBindingVotes = rows.map(row => {
 
 // Read existing binding votes data from bindingVotes.json
 let existingBindingVotes = [];
-const filePath = path.join(__dirname, 'bindingVotes.json');
+const filePath = path.join('bindingVotes.json');
 
 try {
   if (fs.existsSync(filePath)) {
