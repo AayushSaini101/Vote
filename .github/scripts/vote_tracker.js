@@ -6,7 +6,7 @@ const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=
 
 if (!bindingVotesSectionMatch) {
   console.error('No binding votes section found');
-  process.exit(1);
+  process.exit(0);
 }
 
 const bindingVotesSection = bindingVotesSectionMatch[0];
@@ -32,7 +32,7 @@ function insertVotingDetails(newBindingVotes){
 const newBindingVotes = rows.map(row => {
   const columns = row.split('|').map(col => col.trim());
   return {
-    user: columns[1],
+    user: columns[1].replace('@', ''),
     vote: columns[2],
     timestamp: columns[3],
     isVotedInLast3Month: true
