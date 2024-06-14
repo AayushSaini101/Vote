@@ -1,6 +1,7 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
+const message = process.env.COMMENT_BODY;
 const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
 
 if (!bindingVotesSectionMatch) {
