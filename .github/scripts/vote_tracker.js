@@ -53,6 +53,7 @@ if (!fs.existsSync(filePath)) {
                                      isVotedInLast3Months: "Not Started",
                                      lastClosedVoteTime: new Date().toISOString()
                                  }));
+    console.log(tscMembers)
 
     fs.writeFileSync(filePath, JSON.stringify(tscMembers, null, 2));
 } 
