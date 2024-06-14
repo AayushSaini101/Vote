@@ -3,11 +3,14 @@ const fs = require('fs');
 const message = process.env.COMMENT_BODY;
 
 
-const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=<details>)/);
+// Adjusted regex to handle both cases: with and without <details>
+const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
+
 if (!bindingVotesSectionMatch) {
   console.error('No binding votes section found');
   return;
 }
+
 const bindingVotesSection = bindingVotesSectionMatch[0];
 
 // Extract the rows of the table using a more flexible regex
@@ -28,7 +31,8 @@ const bindingVotes = rows.map(row => {
   };
 });
 
-fs.writeFile('voteTracking.json', JSON.stringify(bindingVotes, null, 2), (err) => {
+// Write the binding votes data to a JSON file
+fs.writeFile('bindingVotes.json', JSON.stringify(bindingVotes, null, 2), (err) => {
   if (err) {
     console.error('Error writing to JSON file', err);
   } else {
