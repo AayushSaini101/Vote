@@ -22,3 +22,7 @@ O
 VOTE_RECORDS.md,2/d/2ddb5571035aec456f346529d7270b1306d6b5d1
 R
 ".github/workflows/vote-tracker.yml,e/6/e603478f67e0007d8b05ac5f84793004abf59924
+O
+.github/scripts/vote_tracker.js,9/0/90156b44ceb822d58a1ebd4e386518750512e0d3
+A
+VoteTracking.json,b/6/b69c8bcaf50f152826ff71e3cc8d81fb9ab0743f

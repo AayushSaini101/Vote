@@ -56,9 +56,7 @@ if (!fs.existsSync(filePath)) {
 
     fs.writeFileSync(filePath, JSON.stringify(tscMembers, null, 2));
 } 
-else {
 verifyVotingTime(newBindingVotes);
-}
 function verifyVotingTime(newBindingVotes){
   const voteDetailsAll = fs.readFileSync(filePath, 'utf8');
   const voteDetails =  JSON.parse(voteDetailsAll)
