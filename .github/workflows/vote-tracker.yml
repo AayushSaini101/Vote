@@ -27,24 +27,23 @@ jobs:
 
       # Run vote tracker script
       - name: Run vote tracker script
+        id: vote_tracker
         if: |
           github.event.comment.user.login == 'git-vote[bot]' &&
           contains(github.event.comment.body, 'Vote closed')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMENT_BODY: ${{ github.event.comment.body }}
-        run: node .github/scripts/vote_tracker.js
-
-      - name: Configure git
         run: |
-         git config --global user.name "github-actions[bot]"
-         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          node .github/scripts/vote_tracker.js
+          echo "::set-output name=ran_successfully::true"
 
+      # Commit bindingVotes.json if script ran successfully
       - name: Commit bindingVotes.json
+        if: steps.vote_tracker.outputs.ran_successfully == 'true'
         run: |
-           git add bindingVotes.json
-           git commit -m "Add bindingVotes.json"
-           git push
+          git add .github/scripts/bindingVotes.json
+          git commit -m "Add bindingVotes.json"
+          git push
         env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
