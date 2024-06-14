@@ -20,3 +20,5 @@ O
 .github/scripts/vote_tracker.py,8/3/83035dbc92f0a62c47dcd014827d23864a65530f
 ?
 VOTE_RECORDS.md,2/d/2ddb5571035aec456f346529d7270b1306d6b5d1
+R
+".github/workflows/vote-tracker.yml,e/6/e603478f67e0007d8b05ac5f84793004abf59924
