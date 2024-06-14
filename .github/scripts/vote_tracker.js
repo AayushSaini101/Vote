@@ -1,9 +1,6 @@
+const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
-
-const message = process.env.COMMENT_BODY;
-
-// Adjusted regex to handle both cases: with and without <details>
 const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
 
 if (!bindingVotesSectionMatch) {
@@ -21,76 +18,70 @@ if (!rows) {
   process.exit(1);
 }
 
+function insertVotingDetails(newBindingVotes){
+
+  let existingData = fs.readFileSync(filePath);
+  existingData = JSON.parse(existingData);
+
+  // Push new data into existing array
+  existingData.push(...newBindingVotes)
+  
+}
 // Parse the extracted rows to get user names, votes, and timestamps
 const newBindingVotes = rows.map(row => {
   const columns = row.split('|').map(col => col.trim());
   return {
     user: columns[1],
     vote: columns[2],
-    timestamp: columns[3]
+    timestamp: columns[3],
+    isVotedInLast3Month: true
   };
 });
+console.log(newBindingVotes)
 
-// Read existing binding votes data from bindingVotes.json
-let existingBindingVotes = [];
-const filePath = path.join('bindingVotes.json');
+const filePath = path.join( 'VoteTracking.json');
 
-try {
-  if (fs.existsSync(filePath)) {
-    const data = fs.readFileSync(filePath, 'utf8');
-    existingBindingVotes = JSON.parse(data);
-  }
-} catch (err) {
-  console.error('Error reading bindingVotes.json', err);
+// Check if the file exists
+if (!fs.existsSync(filePath)) {
+    // File does not exist, create a new one with initial content
+    const yamlData = fs.readFileSync("Maintainers.yml", 'utf8');
+    const parsedData = yaml.load(yamlData);
+    const tscMembers = parsedData.filter(entry => entry.isTscMember === true)
+                                 .map(entry => ({
+                                     name: entry.github,
+                                     isVotedInLast3Months: "Not Started",
+                                     lastClosedVoteTime: new Date().toISOString()
+                                 }));
+
+    fs.writeFileSync(filePath, JSON.stringify(tscMembers, null, 2));
+} 
+else {
+verifyVotingTime(newBindingVotes);
 }
+function verifyVotingTime(newBindingVotes){
+  const voteDetailsAll = fs.readFileSync(filePath, 'utf8');
+  const voteDetails =  JSON.parse(voteDetailsAll)
+  voteDetails.forEach(voteinfo=>{
+    const index = newBindingVotes.findIndex(vote=>vote.user==voteinfo.name)
+    const currentTime = new Date().toISOString;
+    if(index!=-1){
+      voteinfo["isVotedInLast3Months"]=true
+      voteinfo["lastClosedVoteTime"]=currentTime
 
-// Function to check if a user has voted in the last 90 days
-function hasVotedInLast90Days(userVotes) {
-  const ninetyDaysAgo = new Date();
-  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-
-  const lastVoteTimestamp = userVotes[userVotes.length - 1].timestamp;  // Assuming votes are ordered by timestamp
-  const lastVoteDate = new Date(lastVoteTimestamp);
-
-  return lastVoteDate > ninetyDaysAgo;
-}
-
-// Update or add new binding votes to existingBindingVotes
-newBindingVotes.forEach(newVote => {
-  const existingUserIndex = existingBindingVotes.findIndex(vote => vote.user === newVote.user);
-
-  if (existingUserIndex !== -1) {
-    // User exists in existingBindingVotes
-    const userVotes = existingBindingVotes[existingUserIndex].votes;
-
-    // Check if user has voted in the last 90 days
-    const votedRecently = hasVotedInLast90Days(userVotes);
-
-    if (votedRecently) {
-      console.log(`User ${newVote.user} has voted in the last 90 days.`);
-      // Update existing vote with new timestamp
-      existingBindingVotes[existingUserIndex].votes.push(newVote);
-    } else {
-      console.log(`User ${newVote.user} has not voted in the last 90 days.`);
-      // Replace existing votes with new votes
-      existingBindingVotes[existingUserIndex].votes = [newVote];
     }
-  } else {
-    // User does not exist in existingBindingVotes, add new entry
-    existingBindingVotes.push({
-      user: newVote.user,
-      votes: [newVote]
-    });
+    else{
+      const lastVoteDate = new Date(voteinfo.lastClosedVoteTime);
+      const currentDate = new Date();
+      const diffInMilliseconds = currentDate - lastVoteDate;
+      const threeMonthsInMilliseconds = 3 * 30 * 24 * 60 * 60 * 1000;
+      if (diffInMilliseconds <= threeMonthsInMilliseconds && voteinfo.isVotedInLast3Months!=="Not Started") {
+        voteinfo.isVotedInLast3Months = true;
+        voteinfo.lastClosedVoteTime = currentTime;
+    } else {
+        voteinfo.isVotedInLast3Months = false;
+    }
+    }
+  })
+  fs.writeFileSync(filePath, JSON.stringify(voteDetails, null, 2));
+}
 
-    console.log(`Added user ${newVote.user} to bindingVotes.json.`);
-  }
-});
-
-// Write the updated binding votes data to bindingVotes.json
-fs.writeFile(filePath, JSON.stringify(existingBindingVotes, null, 2), (err) => {
-  if (err) {
-    console.error('Error writing to JSON file', err);
-  } else {
-    console.log('Updated binding votes data has been saved to bindingVotes.json');
-  }
-});
