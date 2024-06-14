@@ -1,30 +1,10 @@
 
-
 const { verify } = require('crypto');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 
-const message = `
-## Vote closed
-  
-  The vote **did not pass**.
-  
-  50.00% of the users with binding vote were in favor (passing threshold: 51%).
-  
-  ### Summary
-  
-  |        In favor        |        Against        |       Abstain        |        Not voted        |
-  | :--------------------: | :-------------------: | :------------------: | :---------------------: |
-  | 1 | 0 | 0 | 1 |
-  
-  
-  ### Binding votes (1)
-  | User | Vote  | Timestamp |
-  | ---- | :---: | :-------: |
-  | @AayushSaini101 | In favor | 2024-06-14 4:32:49.0 +00:00:00 |
-  | @Hello | In favor | 2024-06-14 4:32:49.0 +00:00:00 |
-`;
+const message = process.env.COMMENT_BODY;
 
 const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
 
@@ -47,8 +27,6 @@ function insertVotingDetails(newBindingVotes){
 
   let existingData = fs.readFileSync(filePath);
   existingData = JSON.parse(existingData);
-
-  // Push new data into existing array
   existingData.push(...newBindingVotes)
   
 }
