@@ -34,3 +34,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMENT_BODY: ${{ github.event.comment.body }}
         run: node .github/scripts/vote_tracker.js
+
+      - name: Upload binding votes JSON
+        uses: actions/upload-artifact@v2
+        with:
+          name: binding-votes
+          path: bindingVotes.json
