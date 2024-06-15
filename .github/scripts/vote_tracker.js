@@ -2,7 +2,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 const message = process.env.COMMENT_BODY;
-/ Extract the binding votes section
+// Extract the binding votes section
 const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
 
 if (!bindingVotesSectionMatch) {
