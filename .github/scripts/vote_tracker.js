@@ -2,6 +2,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 const message = process.env.COMMENT_BODY;
+/ Extract the binding votes section
 const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
 
 if (!bindingVotesSectionMatch) {
@@ -11,77 +12,82 @@ if (!bindingVotesSectionMatch) {
 
 const bindingVotesSection = bindingVotesSectionMatch[0];
 
-// Extract the rows of the table using a more flexible regex
+// Extract the rows of the table
 const rows = bindingVotesSection.match(/\| @\w+.*?\|.*?\|.*?\|/g);
 
 if (!rows) {
   console.error('No binding vote rows found');
-  process.exit(1);
+  process.exit(0);
 }
 
-function insertVotingDetails(newBindingVotes){
-
-  let existingData = fs.readFileSync(filePath);
-  existingData = JSON.parse(existingData);
-
-  // Push new data into existing array
-  existingData.push(...newBindingVotes)
-  
-}
 // Parse the extracted rows to get user names, votes, and timestamps
 const newBindingVotes = rows.map(row => {
   const columns = row.split('|').map(col => col.trim());
   return {
-    user: columns[1],
+    user: columns[1].replace('@', ''),
     vote: columns[2],
     timestamp: columns[3],
-    isVotedInLast3Month: true
+    isVotedInLast3Months: true
   };
 });
-console.log(newBindingVotes)
+console.log(newBindingVotes);
 
-const filePath = path.join( 'VoteTracking.json');
+const filePath = path.join('VoteTracking.json');
+
+// Function to insert voting details into the JSON file
+function insertVotingDetails(newBindingVotes) {
+  let existingData = fs.readFileSync(filePath);
+  existingData = JSON.parse(existingData);
+  existingData.push(...newBindingVotes);
+  fs.writeFileSync(filePath, JSON.stringify(existingData, null, 2));
+}
 
 // Check if the file exists
 if (!fs.existsSync(filePath)) {
-    // File does not exist, create a new one with initial content
-    const yamlData = fs.readFileSync("MAINTAINERS.yaml", 'utf8');
-    const parsedData = yaml.load(yamlData);
-    const tscMembers = parsedData.filter(entry => entry.isTscMember === true)
-                                 .map(entry => ({
-                                     name: entry.github,
-                                     isVotedInLast3Months: "Member doesn't give vote to any voting process",
-                                     lastClosedVoteTime: new Date().toISOString()
-                                 }));
-    console.log(tscMembers)
+  const yamlData = fs.readFileSync("MAINTAINERS.yaml", 'utf8');
+  const parsedData = yaml.load(yamlData);
+  const tscMembers = parsedData.filter(entry => entry.isTscMember)
+                               .map(entry => ({
+                                 name: entry.github,
+                                 isVotedInLast3Months: "Member doesn't give vote to any voting process",
+                                 lastClosedVoteTime: new Date().toISOString()
+                               }));
 
-    fs.writeFileSync(filePath, JSON.stringify(tscMembers, null, 2));
-} 
+  fs.writeFileSync(filePath, JSON.stringify(tscMembers, null, 2));
+}
+
 verifyVotingTime(newBindingVotes);
-function verifyVotingTime(newBindingVotes){
-  const voteDetailsAll = fs.readFileSync(filePath, 'utf8');
-  const voteDetails =  JSON.parse(voteDetailsAll)
-  voteDetails.forEach(voteinfo=>{
-    const index = newBindingVotes.findIndex(vote=>vote.user==voteinfo.name)
-    const currentTime = new Date().toISOString();
-    if(index!=-1){
-      voteinfo["isVotedInLast3Months"]=true
-      voteinfo["lastClosedVoteTime"]=currentTime
 
-    }
-    else{
-      const lastVoteDate = new Date(voteinfo.lastClosedVoteTime);
-      const currentDate = new Date();
-      const diffInMilliseconds = currentDate - lastVoteDate;
-      const threeMonthsInMilliseconds = 3 * 30 * 24 * 60 * 60 * 1000;
-      if (diffInMilliseconds <= threeMonthsInMilliseconds && voteinfo.isVotedInLast3Months!=="Member doesn't give vote to any voting process") {
-        voteinfo.isVotedInLast3Months = true;
-        voteinfo.lastClosedVoteTime = currentTime;
+function verifyVotingTime(newBindingVotes) {
+  const voteDetailsAll = fs.readFileSync(filePath, 'utf8');
+  const voteDetails = JSON.parse(voteDetailsAll);
+  voteDetails.forEach(voteInfo => {
+    const index = newBindingVotes.findIndex(vote => vote.user === voteInfo.name);
+    const currentTime = new Date().toISOString();
+
+    if (index !== -1) {
+      voteInfo.isVotedInLast3Months = true;
+      voteInfo.lastClosedVoteTime = currentTime;
     } else {
-        voteinfo.isVotedInLast3Months = false;
+      if (voteInfo.isVotedInLast3Months === "Member doesn't give vote to any voting process") {
+        if (checkVotingDurationMoreThanThreeMonths(voteInfo)) {
+          voteInfo.isVotedInLast3Months = false;
+        }
+      } else {
+        if (!checkVotingDurationMoreThanThreeMonths(voteInfo)) {
+          voteInfo.isVotedInLast3Months = true;
+          voteInfo.lastClosedVoteTime = currentTime;
+        }
+      }
     }
-    }
-  })
+  });
   fs.writeFileSync(filePath, JSON.stringify(voteDetails, null, 2));
 }
 
+function checkVotingDurationMoreThanThreeMonths(voteInfo) {
+  const lastVoteDate = new Date(voteInfo.lastClosedVoteTime);
+  const currentDate = new Date();
+  const diffInMilliseconds = currentDate - lastVoteDate;
+  const threeMonthsInMilliseconds = 3 * 30 * 24 * 60 * 60 * 1000;
+  return diffInMilliseconds > threeMonthsInMilliseconds;
+}
