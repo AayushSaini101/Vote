@@ -80,7 +80,7 @@ voteDetails.forEach(voteInfo => {
     Object.keys(voteInfo).forEach(key => {
       if (key == 'name') {
         updatedVoteInfo['name']=voteInfo.name
-        updatedVoteInfo [""+Issue_Number] = choice;
+        updatedVoteInfo ["IssueNumber#"+Issue_Number] = choice;
       }
       else {
         updatedVoteInfo [key] = voteInfo[key];
