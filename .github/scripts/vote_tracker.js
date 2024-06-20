@@ -4,6 +4,8 @@ const path = require('path');
 const message = process.env.COMMENT_BODY;
 const Issue_Number = process.env.Issue_Number;
 const Issue_Title = process.env.Issue_Title
+const orgName = process.env.ORG_NAME
+const repoName = process.env.REPO_NAME
 // Extract the binding votes section
 
 const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
@@ -143,7 +145,7 @@ function jsonToMarkdownTable(data) {
     // Check if the key contains ':'
     if (key.includes(':')) {
       const [title, number] = key.split(':');
-      markdownTable += `[${title}](Link_to_${number})`;
+      markdownTable += `[${title}](https://github.com/${orgName}/${repoName}/${number})`;
     } else {
       markdownTable += key;
     }
