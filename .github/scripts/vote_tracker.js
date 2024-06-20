@@ -47,7 +47,8 @@ if (!fs.existsSync(filePath)) {
       LastVoteClosedTime: new Date().toISOString(),
       AgreeCount: 0,
       DisagreeCount: 0,
-      AbstainCount: 0
+      AbstainCount: 0,
+      notParticipatingCount: 0
 
     }));
 
@@ -57,11 +58,9 @@ if (!fs.existsSync(filePath)) {
 
 const voteDetailsAll = fs.readFileSync(filePath, 'utf8');
 const voteDetails = JSON.parse(voteDetailsAll);
-const updatedVotes=[]
+const updatedVotes = []
 voteDetails.forEach(voteInfo => {
-
-
-  // Finding the member in the VoteTracking.json
+  // Checking the member who voted in the latest voting process
   const tscMember = latestVotes.findIndex(vote => vote.user === voteInfo.name);
   const currentTime = new Date().toISOString();
   if (tscMember !== -1) {
@@ -73,23 +72,24 @@ voteDetails.forEach(voteInfo => {
       voteInfo.AgreeCount++;
     } else if (choice === "Against") {
       voteInfo.DisagreeCount++;
-    } else{
+    } else {
       voteInfo.AbstainCount++;
     }
     let updatedVoteInfo = {};
     Object.keys(voteInfo).forEach(key => {
       if (key == 'name') {
-        updatedVoteInfo['name']=voteInfo.name
-        updatedVoteInfo ["IssueNumber#"+Issue_Number] = choice;
+        updatedVoteInfo['name'] = voteInfo.name
+        updatedVoteInfo["IssueNumber#" + Issue_Number] = choice;
       }
       else {
-        updatedVoteInfo [key] = voteInfo[key];
+        updatedVoteInfo[key] = voteInfo[key];
       }
     })
     updatedVotes.push(updatedVoteInfo)
-     
+
 
   } else {
+    voteInfo.notParticipatingCount++;
     if (voteInfo.isVotedInLast3Months === "Member doesn't give vote to any voting process") {
       if (checkVotingDurationMoreThanThreeMonths(voteInfo)) {
         voteInfo.isVotedInLast3Months = false;
@@ -107,11 +107,12 @@ fs.rmSync(filePath)
 fs.writeFileSync(filePath, JSON.stringify(updatedVotes, null, 2));
 
 function checkVotingDurationMoreThanThreeMonths(voteInfo) {
-  const lastVoteDate = new Date(voteInfo.lastClosedVoteTime);
+
   const currentDate = new Date();
-  const threeMonthsAgo = new Date(currentDate);
-  threeMonthsAgo.setMonth(currentDate.getMonth() - 3);
+  const lastCompletedVoteDate = new Date(voteInfo.LastVoteClosedTime);
+  const lastVoteDateOfTCSMember = new Date(voteInfo.lastParticipatedVoteTime)
+  const threeMonthsAgoDate = new Date(currentDate);
+  threeMonthsAgoDate.setMonth(currentDate.getMonth() - 3);
 
-  return lastVoteDate <= threeMonthsAgo;
+  return lastCompletedVoteDate >= threeMonthsAgoDate && lastVoteDateOfTCSMember <= threeMonthsAgoDate
 }
-
