@@ -3,8 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const message = process.env.COMMENT_BODY;
 const Issue_Number = process.env.Issue_Number;
+const Issue_Title = process.env.Issue_Title
 // Extract the binding votes section
-
 
 const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
 
@@ -71,7 +71,7 @@ voteDetails.forEach(voteInfo => {
     Object.keys(voteInfo).forEach(key => {
       if (key == 'name') {
         updatedVoteInfo['name'] = voteInfo.name
-        updatedVoteInfo[title+":"+Issue_Number] = choice
+        updatedVoteInfo[Issue_Title+":"+Issue_Number] = choice
       }
       else {
         updatedVoteInfo[key] = voteInfo[key];
