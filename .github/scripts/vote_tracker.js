@@ -145,7 +145,7 @@ function jsonToMarkdownTable(data) {
     // Check if the key contains ':'
     if (key.includes(':')) {
       const [title, number] = key.split(':');
-      markdownTable += `[${title}](https://github.com/${orgName}/${repoName}/${number})`;
+      markdownTable += `[${title}](https://github.com/${orgName}/${repoName}/issues/${number})`;
     } else {
       markdownTable += key;
     }
