@@ -37,7 +37,7 @@ if (!fs.existsSync(filePath)) {
       lastParticipatedVoteTime: "",
       isVotedInLast3Months: "Member doesn't give vote to any voting process",
       lastVoteClosedTime: new Date().toISOString(),
-      addEventListenergreeCount: 0,
+      agreeCount: 0,
       disagreeCount: 0,
       abstainCount: 0,
       notParticipatingCount: 0
