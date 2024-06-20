@@ -34,7 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           Issue_Number: ${{ github.event.issue.number  }}
-          Issue_Title:  ${{ github.event.pull_request.title }}
+          Issue_Title:  ${{ github.event.issue.title }}}
         run: |
           node .github/scripts/vote_tracker.js
           echo "::set-output name=ran_successfully::true"
