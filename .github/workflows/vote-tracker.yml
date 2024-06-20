@@ -34,6 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           Issue_Number: ${{ github.event.issue.number  }}
+          Issue_Title:  ${{ github.event.pull_request.title }}
         run: |
           node .github/scripts/vote_tracker.js
           echo "::set-output name=ran_successfully::true"
@@ -41,8 +42,8 @@ jobs:
       - name: Commit VotingTracking.json
         if: steps.vote_tracker.outputs.ran_successfully == 'true'
         run: |
-          git  add voteTracking.json
-          git commit -m "Update voteTracking.json"
+          git  add voteTrackingDetails.md
+          git commit -m "Update voteTrackingDetails.md"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
