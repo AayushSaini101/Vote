@@ -2,8 +2,8 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 const message = process.env.COMMENT_BODY;
-const Issue_Number = process.env.Issue_Number;
-const Issue_Title = process.env.Issue_Title
+const Issue_Number = process.env.EVENT_NUMBER;
+const Issue_Title = process.env.EVENT_TITLE
 const orgName = process.env.ORG_NAME
 const repoName = process.env.REPO_NAME
 // Extract the binding votes section
@@ -175,9 +175,9 @@ function jsonToMarkdownTable(data) {
       markdownTable += ' | ';
     }
     // Check if the key contains ':'
-    if (key.includes('$$')) {
-      const [title, number] = key.split('$$');
-      markdownTable += `[${title}](Link_to_${number})`;
+    if (key.includes(':')) {
+      const [title, number] = key.split(':');
+      markdownTable += `[${title}](https://github.com/${orgName}/${repoName}/issues/${number})`;
     } else {
       markdownTable += key;
     }
