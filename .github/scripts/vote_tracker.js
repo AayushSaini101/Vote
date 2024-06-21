@@ -131,11 +131,43 @@ function readJsonFile(filename, callback) {
 
 // Function to convert JSON data to markdown table
 function jsonToMarkdownTable(data) {
+
   let markdownTable = '';
+
+  const cssStyles = `
+<style>
+.emoji-hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 10;
+    font-size: 12px;
+}
+
+.emoji-hover:hover::after {
+    opacity: 1;
+}
+</style>
+  `;
+
+  // Append CSS styles to the Markdown table
+  markdownTable += cssStyles + '\n\n';
+
 
   // Get keys from the first object to use as headers
   const keys = Object.keys(data[0]);
 
+  //console.log(keys)
   // Initialize header row
   markdownTable += '| ';
   keys.forEach((key, index) => {
@@ -143,9 +175,9 @@ function jsonToMarkdownTable(data) {
       markdownTable += ' | ';
     }
     // Check if the key contains ':'
-    if (key.includes(':')) {
-      const [title, number] = key.split(':');
-      markdownTable += `[${title}](https://github.com/${orgName}/${repoName}/issues/${number})`;
+    if (key.includes('$$')) {
+      const [title, number] = key.split('$$');
+      markdownTable += `[${title}](Link_to_${number})`;
     } else {
       markdownTable += key;
     }
@@ -161,7 +193,6 @@ function jsonToMarkdownTable(data) {
     markdownTable += '---';
   });
   markdownTable += ' |\n';
-
   // Append values for each object
   data.forEach(obj => {
     markdownTable += '| ';
@@ -169,21 +200,37 @@ function jsonToMarkdownTable(data) {
       // Format name field as clickable GitHub username link
       if (key === 'name') {
         markdownTable += `[${obj[key]}](https://github.com/${obj[key]})`;
-      } else {
-         if(obj[key]==undefined){
-           markdownTable+="Didn't Vote"
-         }
-         else
-        markdownTable += obj[key];
       }
-      markdownTable += ' | ';
+      else
+        if (key.includes("$$")) {
+          if (obj[key] === "In favor") {
+            markdownTable += `<span class="emoji-hover" title="In favor">👍</span>`;
+          }
+          else
+            if (obj[key] === "Against") {
+              markdownTable += `<span class="emoji-hover" title="Against">👎</span>`;
+            }
+            else
+              if (obj[key] === "Abstain") {
+                markdownTable += `<span class="emoji-hover" title="Abstain">👀</span>`;
+              }
+              else {
+                markdownTable += `<span class="emoji-hover" title="Not participated">❌</span>`;
+              }
+        }
+
+        else {
+          markdownTable += obj[key];
+        }
+
+
+      markdownTable += ' | '
     });
     markdownTable = markdownTable.slice(0, -2) + '|\n';
   });
 
   return markdownTable;
 }
-
 // Read JSON data from file
 readJsonFile('VoteTracking.json', (err, jsonData) => {
   if (err) {
