@@ -193,7 +193,7 @@ readJsonFile('VoteTracking.json', (err, jsonData) => {
 
   // Convert JSON data to markdown table
   const markdownTable = jsonToMarkdownTable(jsonData);
-
+  fs.rmSync('voteTrackingDetails.md')
   // Write markdown table to a file
   fs.writeFile('voteTrackingDetails.md', markdownTable, (writeErr) => {
     if (writeErr) {
