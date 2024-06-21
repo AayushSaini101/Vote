@@ -28,7 +28,6 @@ const latestVotes = rows.map(row => {
   };
 });
 
-//console.log(latestVotes)
 const filePath = path.join('VoteTracking.json');
 // Check whether the VoteTracking file is present in the directory or not 
 if (!fs.existsSync(filePath)) {
