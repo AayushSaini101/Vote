@@ -85,6 +85,16 @@ voteDetails.forEach(voteInfo => {
   } else {
     voteInfo.notParticipatingCount++;
     voteInfo.LastVoteClosedTime = currentTime
+    let updatedVoteInfo = {};
+    Object.keys(voteInfo).forEach(key => {
+      if (key == 'name') {
+        updatedVoteInfo['name'] = voteInfo.name
+        updatedVoteInfo[Issue_Title+"$$"+Issue_Number] = "Not participated"
+      }
+      else {
+        updatedVoteInfo[key] = voteInfo[key];
+      }
+    })
     if (voteInfo.isVotedInLast3Months === "Member doesn't give vote to any voting process") {
       if (checkVotingDurationMoreThanThreeMonths(voteInfo)) {
         voteInfo.isVotedInLast3Months = false;
@@ -94,7 +104,7 @@ voteDetails.forEach(voteInfo => {
         voteInfo.isVotedInLast3Months = true;
       }
     }
-    updatedVotes.push(voteInfo)
+    updatedVotes.push(updatedVoteInfo)
   }
 });
 
@@ -184,7 +194,8 @@ function jsonToMarkdownTable(data) {
               if (obj[key] === "Abstain") {
                 markdownTable += `<span  style="position: relative; cursor: pointer;" title="Abstain">👀</span>`;
               }
-              else {
+              else 
+              if(obj[key] === "Not participated"){
                 markdownTable += `<span style="position: relative; cursor: pointer;" title="Not participated">❌</span>`;
               }
         }
