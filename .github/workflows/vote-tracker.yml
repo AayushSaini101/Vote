@@ -33,7 +33,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMENT_BODY: ${{ github.event.comment.body }}
-          Issue_Number: ${{ github.event.issue.number  }}
+          Issue_Number: ${{ github.event.pull_request.number || github.event.issue.number }}
           Issue_Title:  ${{ github.event.issue.title }}
           ORG_NAME:     ${{ github.repository_owner }}
           REPO_NAME:    ${{ github.event.repository.name }}
