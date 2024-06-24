@@ -15,12 +15,11 @@ const latestVotes = rows.map(row => {
   const [ , user, vote, timestamp] = row.split('|').map(col => col.trim());
   return { user: user.replace('@', ''), vote, timestamp, isVotedInLast3Months: true };
 });
-
+const yamlData = fs.readFileSync('MAINTAINERS.yaml', 'utf8');
+const maintainersInfo = yaml.load(yamlData);
 // Initialize vote tracking file if it doesn't exist
 if (!fs.existsSync(filePath)) {
-  const yamlData = fs.readFileSync('MAINTAINERS.yaml', 'utf8');
-  const parsedData = yaml.load(yamlData);
-  const tscMembers = parsedData.filter(entry => entry.isTscMember).map(entry => ({
+  const tscMembers = maintainersInfo.filter(entry => entry.isTscMember).map(entry => ({
     name: entry.github,
     lastParticipatedVoteTime: '',
     hasVotedInLast3Months: 'false',
@@ -36,6 +35,8 @@ if (!fs.existsSync(filePath)) {
 const voteDetails = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 const latestVotesInfo = []
 voteDetails.map(voteInfo => {
+  const checkPersonisTSC = maintainersInfo.some(item => item.github === voteInfo.name);
+  if (checkPersonisTSC){
   const currentTime = new Date().toISOString().split('T')[0];
   const userInfo = latestVotes.find(vote => vote.user === voteInfo.name);
   const choice = userInfo ? userInfo.vote : "Not participated";
@@ -63,7 +64,9 @@ voteDetails.map(voteInfo => {
     }
   })
   latestVotesInfo.push(updatedVoteInfo)
+}
 });
+
 
 fs.writeFileSync(filePath, JSON.stringify(latestVotesInfo, null, 2));
 

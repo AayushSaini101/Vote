@@ -8,6 +8,22 @@ jobs:
   track-vote:
     runs-on: ubuntu-latest
     steps:
+      - name: Run vote tracker script
+        id: vote_tracker
+        if: |
+          github.event.comment.user.login == 'git-vote[bot]' &&
+          contains(github.event.comment.body, 'Vote closed')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          EVENT_NUMBER: ${{ github.event.issue.number  }}
+          EVENT_TITLE:  ${{ github.event.issue.title }}
+          ORG_NAME:     ${{ github.repository_owner }}
+          REPO_NAME:    ${{ github.event.repository.name }}
+        run: |
+          node .github/scripts/vote_tracker.js
+          echo "::set-output name=ran_successfully::true"
+          
       - name: Checkout repository
         uses: actions/checkout@v4
       
@@ -24,22 +40,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Run vote tracker script
-        id: vote_tracker
-        if: |
-          github.event.comment.user.login == 'git-vote[bot]' &&
-          contains(github.event.comment.body, 'Vote closed')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMENT_BODY: ${{ github.event.comment.body }}
-          EVENT_NUMBER: ${{ github.event.issue.number  }}
-          EVENT_TITLE:  ${{ github.event.issue.title }}
-          ORG_NAME:     ${{ github.repository_owner }}
-          REPO_NAME:    ${{ github.event.repository.name }}
-        run: |
-          node .github/scripts/vote_tracker.js
-          echo "::set-output name=ran_successfully::true"
 
       - name: Commit VotingTracking.json
         if: steps.vote_tracker.outputs.ran_successfully == 'true'
