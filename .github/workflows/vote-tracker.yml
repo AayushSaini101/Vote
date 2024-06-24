@@ -23,11 +23,14 @@ jobs:
         run: |
           node .github/scripts/vote_tracker.js
           echo "::set-output name=ran_successfully::true"
-          
+
       - name: Checkout repository
+        if: steps.vote_tracker.outputs.ran_successfully == 'true'
         uses: actions/checkout@v4
+
       
       - name: Set up Node.js
+        if: steps.vote_tracker.outputs.ran_successfully == 'true'
         uses: actions/setup-node@v2
         with:
           node-version: '14'
@@ -37,6 +40,7 @@ jobs:
         shell: bash
 
       - name: Configure Git
+        if: steps.vote_tracker.outputs.ran_successfully == 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
