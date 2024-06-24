@@ -2,8 +2,8 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 const message = process.env.COMMENT_BODY;
-const Issue_Number = process.env.EVENT_NUMBER;
-const Issue_Title = process.env.EVENT_TITLE
+const eventNumber = process.env.EVENT_NUMBER;
+const eventTitle = process.env.EVENT_TITLE
 const orgName = process.env.ORG_NAME
 const repoName = process.env.REPO_NAME
 const filePath = path.join('VoteTracking.json');
@@ -23,7 +23,7 @@ if (!fs.existsSync(filePath)) {
   const tscMembers = parsedData.filter(entry => entry.isTscMember).map(entry => ({
     name: entry.github,
     lastParticipatedVoteTime: '',
-    isVotedInLast3Months: 'false',
+    hasVotedInLast3Months: 'false',
     lastVoteClosedTime: new Date().toISOString().split('T')[0],
     agreeCount: 0,
     disagreeCount: 0,
@@ -41,14 +41,14 @@ voteDetails.map(voteInfo => {
   const choice = userInfo ? userInfo.vote : "Not participated";
   
   if (userInfo) {
-    voteInfo.isVotedInLast3Months = true;
+    voteInfo.hasVotedInLast3Months = true;
     voteInfo.lastParticipatedVoteTime = currentTime;
     voteInfo[choice === "In favor" ? 'agreeCount' : choice === "Against" ? 'disagreeCount' : 'abstainCount']++;
   } else {
     voteInfo.notParticipatingCount++;
     voteInfo.lastVoteClosedTime = currentTime;
     if (!checkVotingDurationMoreThanThreeMonths(voteInfo)) {
-      voteInfo.isVotedInLast3Months = false;
+      voteInfo.hasVotedInLast3Months = false;
     }
   }
 
@@ -56,7 +56,7 @@ voteDetails.map(voteInfo => {
   Object.keys(voteInfo).forEach(key => {
     if (key == 'name') {
       updatedVoteInfo['name'] = voteInfo.name
-      updatedVoteInfo[Issue_Title+"$$"+Issue_Number] = choice
+      updatedVoteInfo[eventTitle+"$$"+eventNumber] = choice
     }
     else {
       updatedVoteInfo[key] = voteInfo[key];
@@ -87,9 +87,9 @@ function jsonToMarkdownTable(data) {
     const titles = {
       name: "Github user name",
       lastParticipatedVoteTime: "Last participated vote time of the user",
-      isVotedInLast3Months: "Voted in last 3 months or not",
+      hasVotedInLast3Months: "Voted in last 3 months or not",
       lastVoteClosedTime: "Last vote closed time",
-      agreeCount: "Number of agreements",
+      agreeCount: "Number of agreements votes",
       disagreeCount: "Number of disagreements votes",
       abstainCount: "Number of abstentions votes",
       notParticipatingCount: "Number of non-participations votes"
