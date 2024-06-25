@@ -8,36 +8,26 @@ jobs:
   track-vote:
     runs-on: ubuntu-latest
     steps:
-      - name: Run vote tracker script
+    
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Installing Module
+        run: npm install js-yaml@4.1.0
+        shell: bash
+
+      - name: Run GitHub Script
         id: vote_tracker
+        uses: actions/github-script@v7
         if: |
           github.event.comment.user.login == 'git-vote[bot]' &&
           contains(github.event.comment.body, 'Vote closed')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMENT_BODY: ${{ github.event.comment.body }}
-          EVENT_NUMBER: ${{ github.event.issue.number  }}
-          EVENT_TITLE:  ${{ github.event.issue.title }}
-          ORG_NAME:     ${{ github.repository_owner }}
-          REPO_NAME:    ${{ github.event.repository.name }}
-        run: |
-          node .github/scripts/vote_tracker.js
-          echo "::set-output name=ran_successfully::true"
-
-      - name: Checkout repository
-        if: steps.vote_tracker.outputs.ran_successfully == 'true'
-        uses: actions/checkout@v4
-
-      
-      - name: Set up Node.js
-        if: steps.vote_tracker.outputs.ran_successfully == 'true'
-        uses: actions/setup-node@v2
         with:
-          node-version: '14'
-
-      - name: Install the dependencies
-        run: npm install js-yaml@4.1.0
-        shell: bash
+          script: |
+            const script = require('./.github/scripts/vote_tracker.js');
+            await script({ github, context, core });
+            core.setOutput('ran_successfully', 'true');
+            console.log('Script ran successfully');
 
       - name: Configure Git
         if: steps.vote_tracker.outputs.ran_successfully == 'true'
@@ -48,9 +38,8 @@ jobs:
       - name: Commit VotingTracking.json
         if: steps.vote_tracker.outputs.ran_successfully == 'true'
         run: |
-          git  add voteTrackingDetails.md
-          git  add VoteTracking.json
-          git commit -m "Update voteTrackingDetails.md"
+          git add voteTrackingDetails.md VoteTracking.json
+          git commit -m "Update vote tracking details"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
