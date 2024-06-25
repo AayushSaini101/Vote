@@ -7,8 +7,8 @@ module.exports = async ({ github, context, core }) => {
   const message = context.payload.comment.body;
   const eventNumber = context.issue.number;
   const eventTitle = context.payload.issue.title
-  const orgName =  context.issue.owner
-  const repoName = context.issue.repo
+  const orgName = context.issue.number.owner
+  const repoName = context.issue.number.repo
 
   const filePath = path.join('VoteTracking.json');
 
@@ -19,14 +19,15 @@ module.exports = async ({ github, context, core }) => {
     const [, user, vote, timestamp] = row.split('|').map(col => col.trim());
     return { user: user.replace('@', ''), vote, timestamp, isVotedInLast3Months: true };
   });
+
   const yamlData = fs.readFileSync('MAINTAINERS.yaml', 'utf8');
-  const maintainersInfo = yaml.load(yamlData);
+  const parsedData = yaml.load(yamlData);
   // Initialize vote tracking file if it doesn't exist
   if (!fs.existsSync(filePath)) {
-    const tscMembers = maintainersInfo.filter(entry => entry.isTscMember).map(entry => ({
+    const tscMembers = parsedData.filter(entry => entry.isTscMember).map(entry => ({
       name: entry.github,
       lastParticipatedVoteTime: '',
-      hasVotedInLast3Months: 'false',
+      isVotedInLast3Months: 'false',
       lastVoteClosedTime: new Date().toISOString().split('T')[0],
       agreeCount: 0,
       disagreeCount: 0,
@@ -35,28 +36,29 @@ module.exports = async ({ github, context, core }) => {
     }));
     fs.writeFileSync(filePath, JSON.stringify(tscMembers, null, 2));
   }
-
+  const found = parsedData.some(item => item.github === "AayushSaini101");
+  console.log(found)
   const voteDetails = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   const latestVotesInfo = []
   voteDetails.map(voteInfo => {
-    const checkPersonisTSC = maintainersInfo.some(item => item.github === voteInfo.name);
+    const checkPersonisTSC = parsedData.some(item => item.github === voteInfo.name);
     if (checkPersonisTSC) {
       const currentTime = new Date().toISOString().split('T')[0];
       const userInfo = latestVotes.find(vote => vote.user === voteInfo.name);
       const choice = userInfo ? userInfo.vote : "Not participated";
-
+  
       if (userInfo) {
-        voteInfo.hasVotedInLast3Months = true;
+        voteInfo.isVotedInLast3Months = true;
         voteInfo.lastParticipatedVoteTime = currentTime;
         voteInfo[choice === "In favor" ? 'agreeCount' : choice === "Against" ? 'disagreeCount' : 'abstainCount']++;
       } else {
         voteInfo.notParticipatingCount++;
         voteInfo.lastVoteClosedTime = currentTime;
         if (!checkVotingDurationMoreThanThreeMonths(voteInfo)) {
-          voteInfo.hasVotedInLast3Months = false;
+          voteInfo.isVotedInLast3Months = false;
         }
       }
-
+  
       let updatedVoteInfo = {};
       Object.keys(voteInfo).forEach(key => {
         if (key == 'name') {
@@ -70,8 +72,7 @@ module.exports = async ({ github, context, core }) => {
       latestVotesInfo.push(updatedVoteInfo)
     }
   });
-
-
+  
   fs.writeFileSync(filePath, JSON.stringify(latestVotesInfo, null, 2));
 
   // Check voting duration
@@ -92,14 +93,14 @@ module.exports = async ({ github, context, core }) => {
         return `[${title}](https://github.com/${orgName}/${repoName}/issues/${number})`;
       }
       const titles = {
-        name: "Github user name",
-        lastParticipatedVoteTime: "Last participated vote time of the user",
-        hasVotedInLast3Months: "Voted in last 3 months or not",
-        lastVoteClosedTime: "Last vote closed time",
-        agreeCount: "Number of agreements votes",
-        disagreeCount: "Number of disagreements votes",
-        abstainCount: "Number of abstentions votes",
-        notParticipatingCount: "Number of non-participations votes"
+        name: "GitHub user name",
+        lastParticipatedVoteTime: "Last time the TSC member participated in a vote",
+        hasVotedInLast3Months: "Flag indicating if TSC member voted in last 3 months. This information is calculated after each voting, and not basing on a schedule as there might be moments when there is no voting in place for 3 months and therefore no TSC member votes.",
+        lastVoteClosedTime: "Date when last vote was closed. It indicated when the last voting took place and marks the date when this tracking document was updated.",
+        agreeCount: "Number of times TSC member agreed in a vote.",
+        disagreeCount: "Number of times TSC member did not agree in a vote.",
+        abstainCount: "Number of times TSC member abstained from voting.",
+        notParticipatingCount: "Number of times TSC member did not participate in voting."
       };
       return `<span style="position: relative; cursor: pointer;" title="${titles[key] || key}">${key}</span>`;
     }).join(' | ') + ' |\n';
@@ -126,4 +127,3 @@ module.exports = async ({ github, context, core }) => {
   fs.writeFileSync('voteTrackingDetails.md', markdownTable);
   console.log('Markdown table has been written to voteTrackingDetails.md');
 }
-
