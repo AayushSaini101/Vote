@@ -10,7 +10,7 @@ module.exports = async ({context}) => {
   const orgName = context.issue.owner
   const repoName = context.issue.repo
 
-  const filePath = path.join('voteTracking.json');
+  const filePath = path.join('voteTrackingFile.json');
 
   const votingRows = parseVoteClosedComment()
   
