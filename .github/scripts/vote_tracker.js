@@ -28,7 +28,7 @@ module.exports = async ({ context }) => {
   const maintainerInformation = yaml.load(maintainerInfo);
 
   // Update the TSC Members 
-  updateVoteTrackingFile()
+  await updateVoteTrackingFile()
 
   // Read and parse the vote tracking file
   const voteDetails = JSON.parse(await readFile(filePath, 'utf8'));
