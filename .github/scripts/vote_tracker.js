@@ -22,7 +22,7 @@ module.exports = async ({context}) => {
   const yamlData = await readFile('MAINTAINERS.yaml', 'utf8');
   const parsedData = yaml.load(yamlData);
 
-  const voteDetails = await JSON.parse(readFile(filePath, 'utf8'));
+  const voteDetails =  JSON.parse(await readFile(filePath, 'utf8'));
 
   const latestVotesInfo = []
   voteDetails.map(voteInfo => {
