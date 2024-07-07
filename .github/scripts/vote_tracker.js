@@ -1,8 +1,8 @@
 const yaml = require('js-yaml');
-const fs = require('fs');
+const { readFile } = require('fs').promises;
 const path = require('path');
 
-module.exports = async ({ github, context, core }) => {
+module.exports = async ({context}) => {
 
   const message = context.payload.comment.body;
   const eventNumber = context.issue.number;
@@ -12,18 +12,17 @@ module.exports = async ({ github, context, core }) => {
 
   const filePath = path.join('VoteTracking.json');
 
-  const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
-  const bindingVotesSection = bindingVotesSectionMatch ? bindingVotesSectionMatch[0] : '';
-  const rows = bindingVotesSection.match(/\| @\w+.*?\|.*?\|.*?\|/g) || [];
-  const latestVotes = rows.map(row => {
+  const votingRows = parseVoteClosedComment()
+  
+  const latestVotes = votingRows.map(row => {
     const [, user, vote, timestamp] = row.split('|').map(col => col.trim());
     return { user: user.replace('@', ''), vote, timestamp, isVotedInLast3Months: true };
   });
 
-  const yamlData = fs.readFileSync('MAINTAINERS.yaml', 'utf8');
+  const yamlData = await readFile.readFileSync('MAINTAINERS.yaml', 'utf8');
   const parsedData = yaml.load(yamlData);
   // Initialize vote tracking file if it doesn't exist
-  if (!fs.existsSync(filePath)) {
+  if (!readFile.existsSync(filePath)) {
     const tscMembers = parsedData.filter(entry => entry.isTscMember).map(entry => ({
       name: entry.github,
       lastParticipatedVoteTime: '',
@@ -34,11 +33,10 @@ module.exports = async ({ github, context, core }) => {
       abstainCount: 0,
       notParticipatingCount: 0
     }));
-    fs.writeFileSync(filePath, JSON.stringify(tscMembers, null, 2));
+    readFile.writeFileSync(filePath, JSON.stringify(tscMembers, null, 2));
   }
-  const found = parsedData.some(item => item.github === "AayushSaini101");
-  console.log(found)
-  const voteDetails = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+
+  const voteDetails = JSON.parse(readFile.readFileSync(filePath, 'utf8'));
   const latestVotesInfo = []
   voteDetails.map(voteInfo => {
     const checkPersonisTSC = parsedData.some(item => item.github === voteInfo.name);
@@ -73,9 +71,16 @@ module.exports = async ({ github, context, core }) => {
     }
   });
   
-  fs.writeFileSync(filePath, JSON.stringify(latestVotesInfo, null, 2));
+  readFile.writeFileSync(filePath, JSON.stringify(latestVotesInfo, null, 2));
 
-  // Check voting duration
+  // Method to parse the vote-closed comment created by git-vote[bot]
+  function parseVoteClosedComment(){
+    const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
+    const bindingVotesSection = bindingVotesSectionMatch ? bindingVotesSectionMatch[0] : '';
+    return bindingVotesSection.match(/\| @\w+.*?\|.*?\|.*?\|/g) || [];
+  }
+
+  // Check voting duration 
   function checkVotingDurationMoreThanThreeMonths(voteInfo) {
     const currentDate = new Date();
     const threeMonthsAgoDate = new Date(currentDate);
@@ -124,6 +129,6 @@ module.exports = async ({ github, context, core }) => {
   }
 
   const markdownTable = jsonToMarkdownTable(latestVotesInfo);
-  fs.writeFileSync('voteTrackingDetails.md', markdownTable);
+  readFile.writeFileSync('voteTrackingDetails.md', markdownTable);
   console.log('Markdown table has been written to voteTrackingDetails.md');
 }
