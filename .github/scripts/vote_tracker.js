@@ -2,7 +2,8 @@ const yaml = require('js-yaml');
 const { readFile, writeFile} = require('fs').promises;
 const path = require('path');
 
-module.exports = async ({context}) => {
+module.exports = async ({context}) =>{
+
 
   const message = context.payload.comment.body;
   const eventNumber = context.issue.number;
@@ -116,6 +117,6 @@ module.exports = async ({context}) => {
   }
 
   const markdownTable = jsonToMarkdownTable(latestVotesInfo);
-  readFile.writeFileSync('voteTrackingDetails.md', markdownTable);
+  await writeFile('voteTrackingDetails.md', markdownTable);
   console.log('Markdown table has been written to voteTrackingDetails.md');
 }
