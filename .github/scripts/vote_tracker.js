@@ -1,75 +1,82 @@
 const yaml = require('js-yaml');
-const { readFile, writeFile} = require('fs').promises;
+const { readFile, writeFile } = require('fs').promises;
 const path = require('path');
 
-module.exports = async ({context}) =>{
-
-
+module.exports = async ({ context }) => {
+  // Extract necessary details from the context
   const message = context.payload.comment.body;
-  const eventNumber = context.issue.number;
-  const eventTitle = context.payload.issue.title
-  const orgName = context.issue.owner
-  const repoName = context.issue.repo
+  const issueNumber = context.issue.number;
+  const issueTitle = context.payload.issue.title;
+  const orgName = context.issue.owner;
+  const repoName = context.issue.repo;
 
+  // Path to the vote tracking file
   const filePath = path.join('voteTrackingFile.json');
 
-  const votingRows = parseVoteClosedComment()
-  
+  // Parse the vote-closed comment to get voting rows
+  const votingRows = parseVoteClosedComment();
+
+  // Extract latest votes information from the parsed voting rows
   const latestVotes = votingRows.map(row => {
     const [, user, vote, timestamp] = row.split('|').map(col => col.trim());
     return { user: user.replace('@', ''), vote, timestamp, isVotedInLast3Months: true };
   });
 
+  // Read and parse the MAINTAINERS.yaml file
   const yamlData = await readFile('MAINTAINERS.yaml', 'utf8');
   const parsedData = yaml.load(yamlData);
 
-  const voteDetails =  JSON.parse(await readFile(filePath, 'utf8'));
+  // Read and parse the vote tracking file
+  const voteDetails = JSON.parse(await readFile(filePath, 'utf8'));
 
-  const latestVotesInfo = []
-  voteDetails.map(voteInfo => {
-    const checkPersonisTSC = parsedData.some(item => item.github === voteInfo.name);
-    if (checkPersonisTSC) {
+  const updatedVoteDetails = [];
+
+  // Process each vote detail to update voting information
+  voteDetails.forEach(voteInfo => {
+    const isTscMember = parsedData.some(item => item.github === voteInfo.name);
+    if (isTscMember) {
       const currentTime = new Date().toISOString().split('T')[0];
       const userInfo = latestVotes.find(vote => vote.user === voteInfo.name);
-      const choice = userInfo ? userInfo.vote : "Not participated";
-  
+      const voteChoice = userInfo ? userInfo.vote : "Not participated";
+
       if (userInfo) {
         voteInfo.isVotedInLast3Months = true;
         voteInfo.lastParticipatedVoteTime = currentTime;
-        voteInfo[choice === "In favor" ? 'agreeCount' : choice === "Against" ? 'disagreeCount' : 'abstainCount']++;
+        voteInfo[voteChoice === "In favor" ? 'agreeCount' : voteChoice === "Against" ? 'disagreeCount' : 'abstainCount']++;
       } else {
         voteInfo.notParticipatingCount++;
         voteInfo.lastVoteClosedTime = currentTime;
-        if (!checkVotingDurationMoreThanThreeMonths(voteInfo)) {
+        if (!isVotingWithinLastThreeMonths(voteInfo)) {
           voteInfo.isVotedInLast3Months = false;
         }
       }
-  
+
+      // Update vote information with the issue title and number
       let updatedVoteInfo = {};
       Object.keys(voteInfo).forEach(key => {
-        if (key == 'name') {
-          updatedVoteInfo['name'] = voteInfo.name
-          updatedVoteInfo[eventTitle + "$$" + eventNumber] = choice
-        }
-        else {
+        if (key === 'name') {
+          updatedVoteInfo['name'] = voteInfo.name;
+          updatedVoteInfo[issueTitle + "$$" + issueNumber] = voteChoice;
+        } else {
           updatedVoteInfo[key] = voteInfo[key];
         }
-      })
-      latestVotesInfo.push(updatedVoteInfo)
+      });
+      updatedVoteDetails.push(updatedVoteInfo);
     }
   });
-  
-  await writeFile(filePath, JSON.stringify(latestVotesInfo, null, 2));
 
-  // Method to parse the vote-closed comment created by git-vote[bot]
-  function parseVoteClosedComment(){
+  // Write the updated vote details back to the file
+  await writeFile(filePath, JSON.stringify(updatedVoteDetails, null, 2));
+
+  // Parse the vote-closed comment created by git-vote[bot]
+  function parseVoteClosedComment() {
     const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
     const bindingVotesSection = bindingVotesSectionMatch ? bindingVotesSectionMatch[0] : '';
     return bindingVotesSection.match(/\| @\w+.*?\|.*?\|.*?\|/g) || [];
   }
 
-  // Check voting duration 
-  function checkVotingDurationMoreThanThreeMonths(voteInfo) {
+  // Check if voting duration is within the last three months
+  function isVotingWithinLastThreeMonths(voteInfo) {
     const currentDate = new Date();
     const threeMonthsAgoDate = new Date(currentDate);
     threeMonthsAgoDate.setMonth(currentDate.getMonth() - 3);
@@ -77,7 +84,7 @@ module.exports = async ({context}) =>{
       new Date(voteInfo.lastParticipatedVoteTime) <= threeMonthsAgoDate;
   }
 
-  // Convert JSON data to markdown table
+  // Convert JSON data to a markdown table
   function jsonToMarkdownTable(data) {
     const keys = Object.keys(data[0]);
     let markdownTable = '| ' + keys.map(key => {
@@ -116,7 +123,8 @@ module.exports = async ({context}) =>{
     return markdownTable;
   }
 
-  const markdownTable = jsonToMarkdownTable(latestVotesInfo);
+  // Generate the markdown table and write it to a file
+  const markdownTable = jsonToMarkdownTable(updatedVoteDetails);
   await writeFile('voteTrackingDetails.md', markdownTable);
   console.log('Markdown table has been written to voteTrackingDetails.md');
-}
+};
