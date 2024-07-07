@@ -19,24 +19,11 @@ module.exports = async ({context}) => {
     return { user: user.replace('@', ''), vote, timestamp, isVotedInLast3Months: true };
   });
 
-  const yamlData = await readFile.readFileSync('MAINTAINERS.yaml', 'utf8');
+  const yamlData = await readFile('MAINTAINERS.yaml', 'utf8');
   const parsedData = yaml.load(yamlData);
-  // Initialize vote tracking file if it doesn't exist
-  if (!readFile.existsSync(filePath)) {
-    const tscMembers = parsedData.filter(entry => entry.isTscMember).map(entry => ({
-      name: entry.github,
-      lastParticipatedVoteTime: '',
-      isVotedInLast3Months: 'false',
-      lastVoteClosedTime: new Date().toISOString().split('T')[0],
-      agreeCount: 0,
-      disagreeCount: 0,
-      abstainCount: 0,
-      notParticipatingCount: 0
-    }));
-    readFile.writeFileSync(filePath, JSON.stringify(tscMembers, null, 2));
-  }
 
-  const voteDetails = JSON.parse(readFile.readFileSync(filePath, 'utf8'));
+  const voteDetails = await JSON.parse(readFile(filePath, 'utf8'));
+
   const latestVotesInfo = []
   voteDetails.map(voteInfo => {
     const checkPersonisTSC = parsedData.some(item => item.github === voteInfo.name);
