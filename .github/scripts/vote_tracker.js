@@ -30,6 +30,8 @@ module.exports = async ({ context }) => {
   const voteDetails = JSON.parse(await readFile(filePath, 'utf8'));
 
   const updatedVoteDetails = [];
+  
+  // Update the vote
 
   // Process each vote detail to update voting information
   voteDetails.forEach(voteInfo => {
