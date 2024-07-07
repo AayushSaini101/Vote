@@ -10,6 +10,7 @@ async function processYamlFile() {
   const parsedData = yaml.load(yamlData);
 
   const voteDetails = JSON.parse( await readFile(filePath, 'utf8'));
+  await writeFile(filePath, JSON.stringify(yamlData, null, 2));
   console.log(voteDetails)
 }
 //const voteDetails = JSON.parse(fs.readFileSync(filePath, 'utf8'));

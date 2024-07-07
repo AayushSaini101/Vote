@@ -1,5 +1,5 @@
 const yaml = require('js-yaml');
-const { readFile } = require('fs').promises;
+const { readFile, writeFile} = require('fs').promises;
 const path = require('path');
 
 module.exports = async ({context}) => {
@@ -58,7 +58,7 @@ module.exports = async ({context}) => {
     }
   });
   
-  readFile.writeFileSync(filePath, JSON.stringify(latestVotesInfo, null, 2));
+  await writeFile(filePath, JSON.stringify(latestVotesInfo, null, 2));
 
   // Method to parse the vote-closed comment created by git-vote[bot]
   function parseVoteClosedComment(){
