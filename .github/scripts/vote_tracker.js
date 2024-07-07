@@ -29,6 +29,9 @@ module.exports = async ({ context }) => {
   // Read and parse the vote tracking file
   const voteDetails = JSON.parse(await readFile(filePath, 'utf8'));
 
+  const updatedVoteDetails = [];
+  
+
   // Process each vote detail to update voting information
   voteDetails.forEach(voteInfo => {
     const isTscMember = parsedData.some(item => item.github === voteInfo.name);

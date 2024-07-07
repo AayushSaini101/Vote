@@ -20,6 +20,7 @@ async function processYamlFile() {
     notParticipatingCount: 0
   }));
   await writeFile(filePath, JSON.stringify(tscMembers, null, 2));
+  if(te)
 
 }
 //const voteDetails = JSON.parse(fs.readFileSync(filePath, 'utf8'));
