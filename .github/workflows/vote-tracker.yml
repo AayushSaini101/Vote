@@ -32,7 +32,7 @@ jobs:
 
       - name: Commit VotingTracking.json
         run: |
-          git add voteTrackingDetails.md VoteTracking.json
+          git add voteTrackingDetails.md voteTrackingFile.json
           git commit -m "Update vote tracking details"
           git push
         env:
