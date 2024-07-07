@@ -23,18 +23,21 @@ module.exports = async ({ context }) => {
   });
 
   // Read and parse the MAINTAINERS.yaml file
-  const yamlData = await readFile('MAINTAINERS.yaml', 'utf8');
-  const parsedData = yaml.load(yamlData);
+  const maintainerInfo = await readFile('MAINTAINERS.yaml', 'utf8');
+
+  const maintainerInformation = yaml.load(maintainerInfo);
+
+  // Update the TSC Members 
+  updateVoteTrackingFile()
 
   // Read and parse the vote tracking file
   const voteDetails = JSON.parse(await readFile(filePath, 'utf8'));
 
   const updatedVoteDetails = [];
-  
 
   // Process each vote detail to update voting information
   voteDetails.forEach(voteInfo => {
-    const isTscMember = parsedData.some(item => item.github === voteInfo.name);
+    const isTscMember = maintainerInformation.some(item => item.github === voteInfo.name);
     if (isTscMember) {
       const currentTime = new Date().toISOString().split('T')[0];
       const userInfo = latestVotes.find(vote => vote.user === voteInfo.name);
@@ -122,6 +125,35 @@ module.exports = async ({ context }) => {
     }).join(' | ') + ' |').join('\n');
 
     return markdownTable;
+  }
+
+  // Function to update the voteTrackingFile with updated TSC Members 
+  async function updateVoteTrackingFile() {
+
+    const tscMembers = maintainerInformation.filter(entry => entry.isTscMember);
+    // Read and parse the vote tracking file
+    const voteDetails = JSON.parse(await readFile(filePath, 'utf8'));
+
+    const updatedTSCMembers = []
+
+    tscMembers.forEach(member => {
+      const existingMember = voteDetails.find(voteInfo => voteInfo.name === member.github);
+      if (!existingMember) {
+        updatedTSCMembers.push({
+          name: member.github,
+          lastParticipatedVoteTime: '',
+          isVotedInLast3Months: 'false',
+          lastVoteClosedTime: new Date().toISOString().split('T')[0],
+          agreeCount: 0,
+          disagreeCount: 0,
+          abstainCount: 0,
+          notParticipatingCount: 0
+        });
+      }
+    });
+    if (tscMembers) {
+      await writeFile(filePath, JSON.stringify(updatedTSCMembers, null, 2));
+    }
   }
 
   // Generate the markdown table and write it to a file
