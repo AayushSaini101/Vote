@@ -172,7 +172,8 @@ module.exports = async ({ context }) => {
       });
       if (updatedTSCMembers.length > 0) {
         try {
-          await writeFile(voteTrackingFile, JSON.stringify(updatedTSCMembers, null, 2));
+          const latestTrackingInformation = [...voteDetails, ...updatedTSCMembers];
+          await writeFile(voteTrackingFile, JSON.stringify(latestTrackingInformation, null, 2));
         } catch (writeError) {
           console.error('Error writing to voteTrackingFile.json:', writeError);
         }
