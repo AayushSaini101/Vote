@@ -15,7 +15,7 @@ module.exports = async ({ context }) => {
     const voteTrackingFile = path.join('voteTrackingFile.json');
 
     // Parse the vote-closed comment to get voting rows
-    const votingRows = parseVoteClosedComment();
+    const votingRows = await parseVoteClosedComment();
 
     // Extract latest votes information from the parsed voting rows
     const latestVotes = votingRows.map(row => {
@@ -37,7 +37,9 @@ module.exports = async ({ context }) => {
 
     // Process each vote detail to update voting information
     voteDetails.forEach(voteInfo => {
+      // Checking only valid vote done by TSC Member
       const isTscMember = maintainerInformation.some(item => item.github === voteInfo.name);
+
       if (isTscMember) {
         const currentTime = new Date().toISOString().split('T')[0];
         const userInfo = latestVotes.find(vote => vote.user === voteInfo.name);
@@ -77,7 +79,7 @@ module.exports = async ({ context }) => {
     }
 
     // Parse the vote-closed comment created by git-vote[bot]
-    function parseVoteClosedComment() {
+   async function parseVoteClosedComment() {
       const bindingVotesSectionMatch = message.match(/Binding votes \(\d+\)[\s\S]*?(?=(<details>|$))/);
       const bindingVotesSection = bindingVotesSectionMatch ? bindingVotesSectionMatch[0] : '';
       return bindingVotesSection.match(/\| @\w+.*?\|.*?\|.*?\|/g) || [];
@@ -93,7 +95,7 @@ module.exports = async ({ context }) => {
     }
 
     // Convert JSON data to a markdown table
-    function jsonToMarkdownTable(data) {
+   async function jsonToMarkdownTable(data) {
       const keys = Object.keys(data[0]);
       let markdownTable = '| ' + keys.map(key => {
         if (key.includes('$$')) {
@@ -168,7 +170,7 @@ module.exports = async ({ context }) => {
     }
 
     // Generate the markdown table and write it to a file
-    const markdownTable = jsonToMarkdownTable(updatedVoteDetails);
+    const markdownTable = await jsonToMarkdownTable(updatedVoteDetails);
     try {
       await writeFile('voteTrackingDetails.md', markdownTable);
       console.log('Markdown table has been written to voteTrackingDetails.md');
