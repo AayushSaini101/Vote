@@ -11,8 +11,6 @@ module.exports = async ({ context }) => {
     const orgName = context.issue.owner;
     const repoName = context.issue.repo;
 
-
-  
     // Path to the vote tracking file
     const voteTrackingFile = path.join('voteTrackingFile.json');
 
@@ -75,7 +73,7 @@ module.exports = async ({ context }) => {
 
     // Write the updated vote details back to the file
     try {
-     // await writeFile(voteTrackingFile, JSON.stringify(updatedVoteDetails, null, 2));
+      await writeFile(voteTrackingFile, JSON.stringify(updatedVoteDetails, null, 2));
     } catch (writeError) {
       console.error('Error writing to voteTrackingFile.json:', writeError);
     }
