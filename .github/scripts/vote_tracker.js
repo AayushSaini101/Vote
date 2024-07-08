@@ -59,6 +59,7 @@ module.exports = async ({ context }) => {
         }
 
         // Update vote information with the issue title and number
+        // The Issue and PR details must be after username of the TSC Member 
         let updatedVoteInfo = {};
         Object.keys(voteInfo).forEach(key => {
           if (key === 'name') {
