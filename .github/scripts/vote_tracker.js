@@ -12,6 +12,7 @@ module.exports = async ({ context }) => {
     const repoName = context.issue.repo;
 
 
+  
     // Path to the vote tracking file
     const voteTrackingFile = path.join('voteTrackingFile.json');
 
@@ -59,7 +60,6 @@ module.exports = async ({ context }) => {
         }
 
         // Update vote information with the issue title and number
-        // The Issue and PR details must be after username of the TSC Member 
         let updatedVoteInfo = {};
         Object.keys(voteInfo).forEach(key => {
           if (key === 'name') {
@@ -75,13 +75,13 @@ module.exports = async ({ context }) => {
 
     // Write the updated vote details back to the file
     try {
-      await writeFile(voteTrackingFile, JSON.stringify(updatedVoteDetails, null, 2));
+     // await writeFile(voteTrackingFile, JSON.stringify(updatedVoteDetails, null, 2));
     } catch (writeError) {
       console.error('Error writing to voteTrackingFile.json:', writeError);
     }
 
     // Generate the markdown table and write it to a file
-    const markdownTable = jsonToMarkdownTable(updatedVoteDetails);
+    const markdownTable = await jsonToMarkdownTable(updatedVoteDetails);
     try {
       await writeFile('voteTrackingDetails.md', markdownTable);
       console.log('Markdown table has been written to voteTrackingDetails.md');
@@ -171,10 +171,11 @@ module.exports = async ({ context }) => {
           });
         }
       });
+      console.log(updatedTSCMembers.length)
       if (updatedTSCMembers.length > 0) {
         try {
-          const latestTrackingInformation = [...voteDetails, ...updatedTSCMembers];
-          await writeFile(voteTrackingFile, JSON.stringify(latestTrackingInformation, null, 2));
+          const combinedData = [...voteDetails, ...updatedTSCMembers];
+          await writeFile(voteTrackingFile, JSON.stringify(combinedData, null, 2));
         } catch (writeError) {
           console.error('Error writing to voteTrackingFile.json:', writeError);
         }
