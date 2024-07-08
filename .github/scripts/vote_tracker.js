@@ -95,7 +95,7 @@ module.exports = async ({ context }) => {
     }
 
     // Convert JSON data to a markdown table
-   async function jsonToMarkdownTable(data) {
+    async function jsonToMarkdownTable(data) {
       const keys = Object.keys(data[0]);
       let markdownTable = '| ' + keys.map(key => {
         if (key.includes('$$')) {
@@ -170,7 +170,7 @@ module.exports = async ({ context }) => {
     }
 
     // Generate the markdown table and write it to a file
-    const markdownTable = await jsonToMarkdownTable(updatedVoteDetails);
+    const markdownTable = jsonToMarkdownTable(updatedVoteDetails);
     try {
       await writeFile('voteTrackingDetails.md', markdownTable);
       console.log('Markdown table has been written to voteTrackingDetails.md');
