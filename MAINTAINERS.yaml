@@ -7,6 +7,15 @@
   isTscMember: true
   repos:
     - website
+- name: AayushSaini
+  github: AayushSaini101
+  linkedin: aishatmuibudeen
+  slack: U03CNHGEUR1
+  twitter: maya_ux_ui
+  availableForHire: true
+  isTscMember: true
+  repos:
+    - website
 - name: Aayush Sahu
   github: aayushmau5
   linkedin: aayushmau5
