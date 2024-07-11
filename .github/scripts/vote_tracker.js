@@ -6,32 +6,56 @@ module.exports = async ({ context }) => {
   try {
     // Extract necessary details from the context
     const message = context.payload.comment.body;
-    const issueNumber = context.issue.number;
-    const issueTitle = context.payload.issue.title;
+    const eventNumber = context.issue.number;
+    const eventTitle = context.payload.issue.title;
     const orgName = context.issue.owner;
     const repoName = context.issue.repo;
 
     // Path to the vote tracking file
     const voteTrackingFile = path.join('voteTrackingFile.json');
 
-    // Parse the vote-closed comment to get voting rows
-    const votingRows = await parseVoteClosedComment();
+    let votingRows;
+    try {
+      // Parse the vote-closed comment to get voting rows
+      votingRows = await parseVoteClosedComment();
+    } catch (error) {
+      throw new Error('Error parsing vote-closed comment: ' + error.message);
+    }
 
-    // Extract latest votes information from the parsed voting rows
     const latestVotes = votingRows.map(row => {
       const [, user, vote, timestamp] = row.split('|').map(col => col.trim());
       return { user: user.replace('@', ''), vote, timestamp, isVotedInLast3Months: true };
     });
 
-    // Read and parse the MAINTAINERS.yaml file
-    const maintainerInfo = await readFile('MAINTAINERS.yaml', 'utf8');
-    const maintainerInformation = yaml.load(maintainerInfo);
+    let maintainerInfo;
+    try {
+      // Read and parse the MAINTAINERS.yaml file
+      maintainerInfo = await readFile('MAINTAINERS.yaml', 'utf8');
+    } catch (error) {
+      throw new Error('Error reading MAINTAINERS.yaml file: ' + error.message);
+    }
 
-    // Update the TSC Members 
-    await updateVoteTrackingFile();
+    let maintainerInformation;
+    try {
+      maintainerInformation = yaml.load(maintainerInfo);
+    } catch (error) {
+      throw new Error('Error parsing MAINTAINERS.yaml file: ' + error.message);
+    }
 
-    // Read and parse the vote tracking file
-    const voteDetails = JSON.parse(await readFile(voteTrackingFile, 'utf8'));
+    try {
+      // Update the TSC Members if new one added in the community
+      await updateVoteTrackingFile();
+    } catch (error) {
+      throw new Error('Error updating vote tracking file: ' + error.message);
+    }
+
+    let voteDetails;
+    try {
+      // Read and parse the vote tracking file
+      voteDetails = JSON.parse(await readFile(voteTrackingFile, 'utf8'));
+    } catch (error) {
+      throw new Error('Error reading voteTrackingFile.json: ' + error.message);
+    }
 
     const updatedVoteDetails = [];
 
@@ -58,11 +82,12 @@ module.exports = async ({ context }) => {
         }
 
         // Update vote information with the issue title and number
+        // The order is after name the Issue number or PR number should be present
         let updatedVoteInfo = {};
         Object.keys(voteInfo).forEach(key => {
           if (key === 'name') {
             updatedVoteInfo['name'] = voteInfo.name;
-            updatedVoteInfo[issueTitle + "$$" + issueNumber] = voteChoice;
+            updatedVoteInfo[eventTitle + "$$" + eventNumber] = voteChoice;
           } else {
             updatedVoteInfo[key] = voteInfo[key];
           }
@@ -71,22 +96,29 @@ module.exports = async ({ context }) => {
       }
     });
 
-    // Write the updated vote details back to the file
     try {
+      // Write the updated vote details back to the file
       await writeFile(voteTrackingFile, JSON.stringify(updatedVoteDetails, null, 2));
     } catch (writeError) {
-      console.error('Error writing to voteTrackingFile.json:', writeError);
+      throw new Error('Error writing to voteTrackingFile.json: ' + writeError.message);
     }
 
-    // Generate the markdown table and write it to a file
-    const markdownTable = await jsonToMarkdownTable(updatedVoteDetails);
+    let markdownTable;
+    try {
+      // Generate the markdown table and write it to a file
+      markdownTable = await jsonToMarkdownTable(updatedVoteDetails);
+    } catch (error) {
+      throw new Error('Error generating markdown table: ' + error.message);
+    }
+
     try {
       await writeFile('voteTrackingDetails.md', markdownTable);
       console.log('Markdown table has been written to voteTrackingDetails.md');
     } catch (writeError) {
-      console.error('Error writing to voteTrackingDetails.md:', writeError);
+      throw new Error('Error writing to voteTrackingDetails.md: ' + writeError.message);
     }
 
+    // Functions are defined below
     // Convert JSON data to a markdown table
     async function jsonToMarkdownTable(data) {
       const keys = Object.keys(data[0]);
@@ -152,12 +184,12 @@ module.exports = async ({ context }) => {
         console.error('Error reading voteTrackingFile.json:', readError);
       }
 
-      const updatedTSCMembers = [];
+      const newTSCMembers = [];
 
       tscMembers.forEach(member => {
         const existingMember = voteDetails.find(voteInfo => voteInfo.name === member.github);
         if (!existingMember) {
-          updatedTSCMembers.push({
+          newTSCMembers.push({
             name: member.github,
             lastParticipatedVoteTime: '',
             isVotedInLast3Months: 'false',
@@ -169,10 +201,9 @@ module.exports = async ({ context }) => {
           });
         }
       });
-      console.log(updatedTSCMembers.length)
-      if (updatedTSCMembers.length > 0) {
+      if (newTSCMembers.length > 0) {
         try {
-          const combinedData = [...voteDetails, ...updatedTSCMembers];
+          const combinedData = [...voteDetails, ...newTSCMembers];
           await writeFile(voteTrackingFile, JSON.stringify(combinedData, null, 2));
         } catch (writeError) {
           console.error('Error writing to voteTrackingFile.json:', writeError);
@@ -180,8 +211,6 @@ module.exports = async ({ context }) => {
       }
     }
   } catch (error) {
-    console.error('Error in while running the vote_tracker workflow:', error);
+    console.error('Error while running the vote_tracker workflow:', error);
   }
-
-
 };
