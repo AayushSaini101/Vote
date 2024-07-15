@@ -35,7 +35,7 @@ jobs:
           git status
       - name: Commit VotingTracking.json
         run: |
-          git add voteTrackingDetails.md voteTrackingFile.json
+          git add TSC_VOTING_OVERVIEW.md voteTrackingFile.json
           git commit -m "Update vote tracking details"
           git push
         env:

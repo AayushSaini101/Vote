@@ -22,11 +22,12 @@ module.exports = async ({ context }) => {
       throw new Error('Error parsing vote-closed comment: ' + error.message);
     }
 
+     // Example table vote comment that is parsed here https://github.com/asyncapi/community/issues/1227#issuecomment-2167463252
     const latestVotes = votingRows.map(row => {
-      const [, user, vote, timestamp] = row.split('|').map(col => col.trim());
-      return { user: user.replace('@', ''), vote, timestamp, isVotedInLast3Months: true };
-    });
-
+	  //skipping first element as parsing is based on split, so table where column starts with | will have first element of created array empty
+	    const [, user, vote, timestamp] = row.split('|').map(col => col.trim());
+	    return { user: user.replace('@', ''), vote, timestamp, isVotedInLast3Months: true };
+	  })
     let maintainerInfo;
     try {
       // Read and parse the MAINTAINERS.yaml file
@@ -112,10 +113,10 @@ module.exports = async ({ context }) => {
     }
 
     try {
-      await writeFile('voteTrackingDetails.md', markdownTable);
-      console.log('Markdown table has been written to voteTrackingDetails.md');
+      await writeFile('TSC_VOTING_OVERVIEW.md', markdownTable);
+      console.log('Markdown table has been written to TSC_VOTING_OVERVIEW.md');
     } catch (writeError) {
-      throw new Error('Error writing to voteTrackingDetails.md: ' + writeError.message);
+      throw new Error('Error writing to TSC_VOTING_OVERVIEW.md: ' + writeError.message);
     }
 
     // Functions are defined below
