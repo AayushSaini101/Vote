@@ -89,10 +89,10 @@ module.exports = async ({ context }) => {
     // Generate the markdown table and write it to a file
     const markdownTable = await jsonToMarkdownTable(updatedVoteDetails);
     try {
-        await writeFile('voteTrackingDetails.md', markdownTable);
-        console.log('Markdown table has been written to voteTrackingDetails.md');
+        await writeFile('TSC_VOTING_OVERVIEW.md', markdownTable);
+        console.log('Markdown table has been written to TSC_VOTING_OVERVIEW.md');
     } catch (writeError) {
-        console.error('Error writing to voteTrackingDetails.md:', writeError);
+        console.error('Error writing to TSC_VOTING_OVERVIEW.md:', writeError);
     }
 
     async function jsonToMarkdownTable(data) {
