@@ -11,6 +11,9 @@ module.exports = async ({ context }) => {
     const orgName = context.issue.owner;
     const repoName = context.issue.repo;
 
+    // Path to the vote tracking file
+    const voteTrackingFile = path.join('voteTrackingFile.json');
+
     // Parse the vote-closed comment to get voting rows
     const votingRows = await parseVoteClosedComment();
 
