@@ -36,13 +36,6 @@ module.exports = async ({ context }) => {
     // Update the TSC Members 
     const voteDetails = await updateVoteTrackingFile();
 
-    try {
-      voteDetails = JSON.parse(await readFile(voteTrackingFile, 'utf8'));
-    } catch (readError) {
-      console.error('Error reading voteTrackingFile.json:', readError);
-      throw readError;
-    }
-
     const updatedVoteDetails = [];
 
     // Process each vote detail to update voting information
@@ -183,16 +176,12 @@ module.exports = async ({ context }) => {
           console.error('Error reading voteTrackingFile.json:', readError);
           throw readError;
         }
-  
         const updatedTSCMembers = [];
-  
         const requiredKeys = ['name', 'lastParticipatedVoteTime', 'isVotedInLast3Months', 'lastVoteClosedTime', 'agreeCount', 'disagreeCount', 'abstainCount', 'notParticipatingCount'];
-  
         // Function to check if an object has all required keys
         const isValidExampleMember = (member) => {
           return requiredKeys.every(key => member.hasOwnProperty(key));
         };
-  
         // Find the first valid example member
         const validExampleMember = voteDetails.find(isValidExampleMember);
   
