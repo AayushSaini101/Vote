@@ -236,12 +236,11 @@ module.exports = async ({ context }) => {
           try {
             updatedVoteDetails.concat(...updatedTSCMembers)
             await writeFile(voteTrackingFile, JSON.stringify(updatedVoteDetails, null, 2));
-            updatedVoteDetails = [...combinedData]
           } catch (writeError) {
             console.error('Error wile writing file:' ,writeError)
         } 
        }
-        return updatedVoteDetails
+       return updatedVoteDetails
     }
 }   catch (error) {
     console.error('Error while running the vote_tracker workflow:', error);
