@@ -718,5 +718,20 @@
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 1
+  },
+  {
+    "name": "aayushmau5",
+    "Creating voting in pull request$$70": "Not participated",
+    "Proposal for Admin Rights for CoC Main Committee on Slack$$1227": "Not participated",
+    "chore: add Marketing WORKING_GROUP$$1130": "Not participated",
+    "docs: add instruction how voting automation works$$1155": "Not participated",
+    "lastParticipatedVoteTime": "Member has not participated in all previous voting process.",
+    "isVotedInLast3Months": "Member has not participated in all previous voting process.",
+    "lastVoteClosedTime": "2024-07-24",
+    "firstVoteClosedTime": "2024-04-12",
+    "agreeCount": 0,
+    "disagreeCount": 0,
+    "abstainCount": 0,
+    "notParticipatingCount": 0
   }
 ]
