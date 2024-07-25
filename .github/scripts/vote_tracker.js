@@ -1,7 +1,7 @@
 const yaml = require('js-yaml');
 const { readFile, writeFile } = require('fs').promises;
 const path = require("path")
-module.exports = async ({ githuh, context, botCommentURL}) => {
+module.exports = async ({ github, context, botCommentURL}) => {
   try {
     let message, eventNumber, eventTitle, orgName, repoName;
     if (botCommentURL) {
@@ -247,23 +247,20 @@ module.exports = async ({ githuh, context, botCommentURL}) => {
        return updatedVoteDetails
     }
     async function fetchCommentInformation(){
-          const { Octokit } = await import("@octokit/rest");
           const urlParts = botCommentURL.split('/');
           eventNumber = urlParts[urlParts.length - 1].split('#')[0];
           const commentId = urlParts[urlParts.length - 1].split('#')[1].replace('issuecomment-', '');
           const [owner, repo] = urlParts.slice(3, 5);
           orgName = owner
           repoName = repo
-          const octokit = new Octokit();
-        
           try {
-              message = await octokit.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
+              message = await github.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
               owner: owner,
               repo: repo,
               comment_id: commentId
             });
             message = message.data.body
-            const { data: issue } = await octokit.rest.issues.get({
+            const { data: issue } = await github.rest.issues.get({
               owner,
               repo,
               issue_number: eventNumber
