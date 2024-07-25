@@ -1,0 +1,20 @@
+name: Manual Trigger Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'World'
+
+jobs:
+  example:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v2
+
+    - name: Run a simple script
+      run: echo "Hello, ${{ github.event.inputs.name }}!"
