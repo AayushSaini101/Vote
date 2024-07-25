@@ -4,8 +4,8 @@ const path = require("path")
 module.exports = async ({ githuh, context, botCommentURL}) => {
   try {
     let message, eventNumber, eventTitle, orgName, repoName;
-    console.log(botCommentUrl);
-    if (botCommentUrl) {
+    console.log(botCommentURL);
+    if (botCommentURL) {
       console.log("Second")
       await call()
     } else {
@@ -251,7 +251,7 @@ module.exports = async ({ githuh, context, botCommentURL}) => {
     }
     async function call(){
           const { Octokit } = await import("@octokit/rest");
-          const urlParts = botCommentUrl.split('/');
+          const urlParts = botCommentURL.split('/');
           eventNumber = urlParts[urlParts.length - 1].split('#')[0];
           const commentId = urlParts[urlParts.length - 1].split('#')[1].replace('issuecomment-', '');
           const [owner, repo] = urlParts.slice(3, 5);
