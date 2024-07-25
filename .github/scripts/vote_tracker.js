@@ -1,28 +1,29 @@
 const yaml = require('js-yaml');
 const { readFile, writeFile } = require('fs').promises;
 const path = require('path');
+const { Octokit } = require("@octokit/rest");
+module.exports = async ({ githuh, context, botCommentURL }) => {
+  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-module.exports = async ({ context, botCommentURL }) => {
   try {
-
     let message, eventNumber, eventTitle, orgName, repoName;
 
-    if (botCommentURL) {
-      // Extract details from the botCommentURL
-      const urlParts = botCommentURL.split('/');
+    if (botCommentUrl) {
+      // Extract details from the botCommentUrl
+      const urlParts = botCommentUrl.split('/');
       eventNumber = urlParts[urlParts.length - 2];
       const commentId = urlParts[urlParts.length - 1].split('#')[1].replace('issuecomment-', '');
       const [owner, repo] = urlParts.slice(3, 5);
 
       // Fetch the comment details using the GitHub API
-      const comment = await github.rest.issues.getComment({
+      const comment = await octokit.rest.issues.getComment({
         owner,
         repo,
         comment_id: commentId,
       });
       
       message = comment.data.body;
-      eventTitle = (await github.rest.issues.get({
+      eventTitle = (await octokit.rest.issues.get({
         owner,
         repo,
         issue_number: eventNumber
@@ -38,6 +39,7 @@ module.exports = async ({ context, botCommentURL }) => {
       orgName = context.repo.owner;
       repoName = context.repo.repo;
     }
+
 
     // Path to the vote tracking file
     const voteTrackingFile = path.join('voteTrackingFile.json');
