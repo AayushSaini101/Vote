@@ -4,12 +4,9 @@ const path = require("path")
 module.exports = async ({ githuh, context, botCommentURL}) => {
   try {
     let message, eventNumber, eventTitle, orgName, repoName;
-    console.log(botCommentURL);
     if (botCommentURL) {
-      console.log("Second")
-      await call()
+      await fetchCommentInformation()
     } else {
-      console.log("sdf");
       // Extract necessary details from the context when triggered by issue_comment
       message = context.payload.comment.body;
       eventNumber = context.issue.number;
@@ -249,7 +246,7 @@ module.exports = async ({ githuh, context, botCommentURL}) => {
        }
        return updatedVoteDetails
     }
-    async function call(){
+    async function fetchCommentInformation(){
           const { Octokit } = await import("@octokit/rest");
           const urlParts = botCommentURL.split('/');
           eventNumber = urlParts[urlParts.length - 1].split('#')[0];
