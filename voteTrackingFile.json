@@ -11,7 +11,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 5,
+    "agreeCount": 6,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 7
@@ -28,7 +28,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 4,
+    "agreeCount": 5,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 8
@@ -45,7 +45,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 5,
+    "agreeCount": 6,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 7
@@ -62,7 +62,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 4,
+    "agreeCount": 5,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 8
@@ -79,7 +79,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 4,
+    "agreeCount": 5,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 8
@@ -96,7 +96,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 5,
+    "agreeCount": 6,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 7
@@ -116,7 +116,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "dalelane",
@@ -130,7 +130,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 2,
+    "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 1,
     "notParticipatingCount": 9
@@ -150,7 +150,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "fmvilas",
@@ -167,7 +167,7 @@
     "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 9
+    "notParticipatingCount": 10
   },
   {
     "name": "geraldloeffler",
@@ -184,7 +184,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "jonaslagoni",
@@ -198,7 +198,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 5,
+    "agreeCount": 6,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 7
@@ -218,7 +218,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "lbroudoux",
@@ -232,7 +232,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 4,
+    "agreeCount": 5,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 8
@@ -252,7 +252,7 @@
     "agreeCount": 0,
     "disagreeCount": 1,
     "abstainCount": 0,
-    "notParticipatingCount": 11
+    "notParticipatingCount": 12
   },
   {
     "name": "derberg",
@@ -266,7 +266,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 5,
+    "agreeCount": 6,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 7
@@ -286,7 +286,7 @@
     "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 9
+    "notParticipatingCount": 10
   },
   {
     "name": "acethecreator",
@@ -303,7 +303,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "damaru-inc",
@@ -320,7 +320,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "mcturco",
@@ -337,7 +337,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "nektariosfifes",
@@ -354,7 +354,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "pakisan",
@@ -368,7 +368,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 2,
+    "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 10
@@ -385,7 +385,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 3,
+    "agreeCount": 4,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 9
@@ -405,7 +405,7 @@
     "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 9
+    "notParticipatingCount": 10
   },
   {
     "name": "rcoppen",
@@ -419,7 +419,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 2,
+    "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 10
@@ -439,7 +439,7 @@
     "agreeCount": 2,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 10
+    "notParticipatingCount": 11
   },
   {
     "name": "smoya",
@@ -453,7 +453,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 4,
+    "agreeCount": 5,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 8
@@ -470,7 +470,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 2,
+    "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 10
@@ -490,7 +490,7 @@
     "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 9
+    "notParticipatingCount": 10
   },
   {
     "name": "bolt04",
@@ -507,7 +507,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "dan-r",
@@ -521,7 +521,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 2,
+    "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 10
@@ -541,7 +541,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "jefflufc",
@@ -558,7 +558,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "lewis-relph",
@@ -575,7 +575,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "tenischev",
@@ -589,7 +589,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 2,
+    "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 10
@@ -606,7 +606,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 2,
+    "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 10
@@ -626,7 +626,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "ivangsa",
@@ -640,7 +640,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 3,
+    "agreeCount": 4,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 9
@@ -657,7 +657,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 2,
+    "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 10
@@ -677,7 +677,7 @@
     "agreeCount": 1,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 11
+    "notParticipatingCount": 12
   },
   {
     "name": "char0n",
@@ -694,7 +694,7 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 12
+    "notParticipatingCount": 13
   },
   {
     "name": "visualbean",
@@ -710,7 +710,7 @@
     "firstVoteClosedTime": "2024-04-12",
     "agreeCount": 0,
     "disagreeCount": 0,
-    "abstainCount": 2,
+    "abstainCount": 3,
     "notParticipatingCount": 10
   },
   {
@@ -725,7 +725,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 5,
+    "agreeCount": 6,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 7
@@ -742,7 +742,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 2,
+    "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 10
@@ -759,7 +759,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 5,
+    "agreeCount": 6,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 7
@@ -779,7 +779,7 @@
     "agreeCount": 3,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 9
+    "notParticipatingCount": 10
   },
   {
     "name": "sambhavgupta0705",
@@ -793,7 +793,7 @@
     "isVotedInLast3Months": true,
     "lastVoteClosedTime": "2024-07-25",
     "firstVoteClosedTime": "2024-04-12",
-    "agreeCount": 4,
+    "agreeCount": 5,
     "disagreeCount": 0,
     "abstainCount": 0,
     "notParticipatingCount": 8
@@ -813,7 +813,7 @@
     "agreeCount": 5,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 4
+    "notParticipatingCount": 5
   },
   {
     "name": "aayushmau5",
@@ -830,6 +830,6 @@
     "agreeCount": 0,
     "disagreeCount": 0,
     "abstainCount": 0,
-    "notParticipatingCount": 8
+    "notParticipatingCount": 9
   }
 ]
