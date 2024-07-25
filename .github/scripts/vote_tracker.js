@@ -3,35 +3,8 @@ const { readFile, writeFile } = require('fs').promises;
 module.exports = async ({ githuh, context, botCommentUrl }) => {
   try {
     let message, eventNumber, eventTitle, orgName, repoName;
-
     if (botCommentUrl) {
-      (async () => {
-        const { Octokit } = await import("@octokit/rest");
-        const botCommentUrl = botCommentUrl;
-        const urlParts = botCommentUrl.split('/');
-        eventNumber = urlParts[urlParts.length - 1].split('#')[0];
-        const commentId = urlParts[urlParts.length - 1].split('#')[1].replace('issuecomment-', '');
-        [orgName, repoName] = urlParts.slice(3, 5);
-        
-        const octokit = new Octokit();
-      
-        try {
-            body = await octokit.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
-            owner: owner,
-            repo: repo,
-            comment_id: commentId
-          });
-          const { data: issue } = await octokit.rest.issues.get({
-            owner,
-            repo,
-            issue_number: eventNumber
-          });
-          eventTitle = issue.title
-        } catch (error) {
-          console.error(error);
-        }
-        
-      })();
+      await call()
     } else {
       // Extract necessary details from the context when triggered by issue_comment
       message = context.payload.comment.body;
@@ -40,7 +13,6 @@ module.exports = async ({ githuh, context, botCommentUrl }) => {
       orgName = context.repo.owner;
       repoName = context.repo.repo;
     }
-
 
     // Path to the vote tracking file
     const voteTrackingFile = path.join('voteTrackingFile.json');
@@ -273,7 +245,35 @@ module.exports = async ({ githuh, context, botCommentUrl }) => {
        }
        return updatedVoteDetails
     }
-}   catch (error) {
+    async function call(){
+          const { Octokit } = await import("@octokit/rest");
+          const urlParts = botCommentUrl.split('/');
+          eventNumber = urlParts[urlParts.length - 1].split('#')[0];
+          const commentId = urlParts[urlParts.length - 1].split('#')[1].replace('issuecomment-', '');
+          const [owner, repo] = urlParts.slice(3, 5);
+          orgName = owner
+          repoName = repo
+          const octokit = new Octokit();
+        
+          try {
+              message = await octokit.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
+              owner: owner,
+              repo: repo,
+              comment_id: commentId
+            });
+            message = message.data.body
+            const { data: issue } = await octokit.rest.issues.get({
+              owner,
+              repo,
+              issue_number: eventNumber
+            });
+            eventTitle = issue.title
+          } catch (error) {
+            console.error(error);
+          }
+    }
+  }
+  catch (error) {
     console.error('Error while running the vote_tracker workflow:', error);
   }
 }
