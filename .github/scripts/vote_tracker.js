@@ -1,8 +1,8 @@
 const yaml = require('js-yaml');
 const { readFile, writeFile } = require('fs').promises;
-const path = require('path');
-const { Octokit } = await import('@octokit/rest');
+
 module.exports = async ({ githuh, context, botCommentUrl }) => {
+  const { Octokit } = await import('@octokit/rest');
   const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
   try {
