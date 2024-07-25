@@ -5,7 +5,11 @@ module.exports = async ({ github, context, botCommentURL}) => {
   try {
     let message, eventNumber, eventTitle, orgName, repoName;
     if (botCommentURL) {
-      await fetchCommentInformation()
+      const voteCommentContext = await fetchCommentInformation();
+      message = voteCommentContext.messageBody
+      eventNumber = voteCommentContext.eventNumber
+      eventTitle = voteCommentContext.eventTitle
+      orgName = voteCommentContext.orgName
     } else {
       // Extract necessary details from the context when triggered by issue_comment
       message = context.payload.comment.body;
@@ -246,30 +250,44 @@ module.exports = async ({ github, context, botCommentURL}) => {
        }
        return updatedVoteDetails
     }
-    async function fetchCommentInformation(){
-          const urlParts = botCommentURL.split('/');
-          eventNumber = urlParts[urlParts.length - 1].split('#')[0];
-          const commentId = urlParts[urlParts.length - 1].split('#')[1].replace('issuecomment-', '');
-          const [owner, repo] = urlParts.slice(3, 5);
-          orgName = owner
-          repoName = repo
-          try {
-              message = await github.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
+    async function fetchCommentInformation() {
+      const urlParts = botCommentURL.split('/');
+      const eventNumber = urlParts[urlParts.length - 1].split('#')[0];
+      const commentId = urlParts[urlParts.length - 1].split('#')[1].replace('issuecomment-', '');
+      const [owner, repo] = urlParts.slice(3, 5);
+      let orgName = owner;
+      let repoName = repo;
+      let messageBody = '';
+      let eventTitle = '';
+  
+      try {
+          const messageResponse = await github.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
               owner: owner,
               repo: repo,
               comment_id: commentId
-            });
-            message = message.data.body
-            const { data: issue } = await github.rest.issues.get({
+          });
+          messageBody = messageResponse.data.body;
+          
+          const issueResponse = await github.rest.issues.get({
               owner,
               repo,
               issue_number: eventNumber
-            });
-            eventTitle = issue.title
-          } catch (error) {
-            console.error(error);
-          }
-    }
+          });
+          eventTitle = issueResponse.data.title;
+      } catch (error) {
+          console.error(error);
+      }
+  
+      return {
+          orgName,
+          repoName,
+          eventNumber,
+          commentId,
+          messageBody,
+          eventTitle
+      };
+  }
+  
   }
   catch (error) {
     console.error('Error while running the vote_tracker workflow:', error);
