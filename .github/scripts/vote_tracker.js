@@ -4,9 +4,12 @@ const path = require("path")
 module.exports = async ({ githuh, context, botCommentUrl }) => {
   try {
     let message, eventNumber, eventTitle, orgName, repoName;
+    console.log(botCommentUrl);
     if (botCommentUrl) {
+      console.log("Second")
       await call()
     } else {
+      console.log("sdf");
       // Extract necessary details from the context when triggered by issue_comment
       message = context.payload.comment.body;
       eventNumber = context.issue.number;
