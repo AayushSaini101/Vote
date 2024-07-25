@@ -1,36 +1,37 @@
 const yaml = require('js-yaml');
 const { readFile, writeFile } = require('fs').promises;
-
 module.exports = async ({ githuh, context, botCommentUrl }) => {
-  const { Octokit } = await import('@octokit/rest');
-  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-
   try {
     let message, eventNumber, eventTitle, orgName, repoName;
 
     if (botCommentUrl) {
-      // Extract details from the botCommentUrl
-      const urlParts = botCommentUrl.split('/');
-      eventNumber = urlParts[urlParts.length - 2];
-      const commentId = urlParts[urlParts.length - 1].split('#')[1].replace('issuecomment-', '');
-      const [owner, repo] = urlParts.slice(3, 5);
-
-      // Fetch the comment details using the GitHub API
-      const comment = await octokit.rest.issues.getComment({
-        owner,
-        repo,
-        comment_id: commentId,
-      });
+      (async () => {
+        const { Octokit } = await import("@octokit/rest");
+        const botCommentUrl = botCommentUrl;
+        const urlParts = botCommentUrl.split('/');
+        eventNumber = urlParts[urlParts.length - 1].split('#')[0];
+        const commentId = urlParts[urlParts.length - 1].split('#')[1].replace('issuecomment-', '');
+        [orgName, repoName] = urlParts.slice(3, 5);
+        
+        const octokit = new Octokit();
       
-      message = comment.data.body;
-      eventTitle = (await octokit.rest.issues.get({
-        owner,
-        repo,
-        issue_number: eventNumber
-      })).data.title;
-
-      orgName = owner;
-      repoName = repo;
+        try {
+            body = await octokit.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
+            owner: owner,
+            repo: repo,
+            comment_id: commentId
+          });
+          const { data: issue } = await octokit.rest.issues.get({
+            owner,
+            repo,
+            issue_number: eventNumber
+          });
+          eventTitle = issue.title
+        } catch (error) {
+          console.error(error);
+        }
+        
+      })();
     } else {
       // Extract necessary details from the context when triggered by issue_comment
       message = context.payload.comment.body;
