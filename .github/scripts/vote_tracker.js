@@ -2,14 +2,42 @@ const yaml = require('js-yaml');
 const { readFile, writeFile } = require('fs').promises;
 const path = require('path');
 
-module.exports = async ({ context }) => {
+module.exports = async ({ context, botCommentURL }) => {
   try {
-    // Extract necessary details from the context
-    const message = context.payload.comment.body;
-    const eventNumber = context.issue.number;
-    const eventTitle = context.payload.issue.title;
-    const orgName = context.issue.owner;
-    const repoName = context.issue.repo;
+
+    let message, eventNumber, eventTitle, orgName, repoName;
+
+    if (botCommentURL) {
+      // Extract details from the botCommentURL
+      const urlParts = botCommentURL.split('/');
+      eventNumber = urlParts[urlParts.length - 2];
+      const commentId = urlParts[urlParts.length - 1].split('#')[1].replace('issuecomment-', '');
+      const [owner, repo] = urlParts.slice(3, 5);
+
+      // Fetch the comment details using the GitHub API
+      const comment = await github.rest.issues.getComment({
+        owner,
+        repo,
+        comment_id: commentId,
+      });
+      
+      message = comment.data.body;
+      eventTitle = (await github.rest.issues.get({
+        owner,
+        repo,
+        issue_number: eventNumber
+      })).data.title;
+
+      orgName = owner;
+      repoName = repo;
+    } else {
+      // Extract necessary details from the context when triggered by issue_comment
+      message = context.payload.comment.body;
+      eventNumber = context.issue.number;
+      eventTitle = context.payload.issue.title;
+      orgName = context.repo.owner;
+      repoName = context.repo.repo;
+    }
 
     // Path to the vote tracking file
     const voteTrackingFile = path.join('voteTrackingFile.json');
