@@ -1,5 +1,6 @@
 const yaml = require('js-yaml');
 const { readFile, writeFile } = require('fs').promises;
+const path = require("path")
 module.exports = async ({ githuh, context, botCommentUrl }) => {
   try {
     let message, eventNumber, eventTitle, orgName, repoName;
