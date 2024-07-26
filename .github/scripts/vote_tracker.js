@@ -19,7 +19,7 @@ module.exports = async ({ github, context, botCommentURL}) => {
       repoName = context.repo.repo;
     }
 
-    console.log(eventNumber, title, orgName, repoName);
+    console.log(eventNumber, eventTitle, orgName, repoName);
     // Path to the vote tracking file
     const voteTrackingFile = path.join('voteTrackingFile.json');
 
