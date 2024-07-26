@@ -10,6 +10,7 @@ module.exports = async ({ github, context, botCommentURL}) => {
       eventNumber = voteCommentContext.eventNumber
       eventTitle = voteCommentContext.eventTitle
       orgName = voteCommentContext.orgName
+      repoName = voteCommentContext.repoName
     } else {
       // Extract necessary details from the context when triggered by issue_comment
       message = context.payload.comment.body;
@@ -19,7 +20,6 @@ module.exports = async ({ github, context, botCommentURL}) => {
       repoName = context.repo.repo;
     }
 
-    console.log(eventNumber, eventTitle, orgName, repoName);
     // Path to the vote tracking file
     const voteTrackingFile = path.join('voteTrackingFile.json');
 
